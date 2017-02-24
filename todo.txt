@@ -1,0 +1,43 @@
+// TODO:
+
+
+//TODO:
+// generate the 3 types of graphs:
+
+	// • Complete graphs on n vertices, where the weight of each edge is a real number chosen uniformly at
+	// random on [0, 1].
+	// • Complete graphs on n vertices, where the vertices are points chosen uniformly at random inside the
+	// unit square. (That is, the points are (x, y), with x and y each a real number chosen uniformly at
+	// random from [0, 1].) The weight of an edge is just the Euclidean distance between its endpoints.
+	// • Complete graphs on n vertices, where the vertices are points chosen uniformly at random inside the
+	// unit cube (3 dimensions) and hypercube (4 dimensions). As with the unit square case above, the
+	// weight of an edge is just the Euclidean distance between its endpoints.
+
+// GOAL 1 : determine, for each type of graph, how the avg weight of the MST grows as a fn of n
+	// implement procedures that generate the random graphs
+		// implement adj list representation
+	// implement an MST algo
+		// implement PQ
+		// implement Prim's
+
+// GOAL 2 : for each type of graph, plot the values
+	// choose some values of n
+	// for each value of n, run code on several randomly chosen instances of size n and compute avg value for runs
+	// give a function f(n) that describes the plot, including constant factors
+		// Run your program for n = 128; 256; 512; 1024; 2048; 4096; 8192; 16384; 32768; 65536; 131072, and larger
+		// values, if your program runs fast enough. (Having your code handle up to at least n = 131072 vertices
+		// is one of the assignment requirements; going up to only smaller n will hurt your score on the assignment.
+		// Getting up to 65536 will result in only a very small loss of points.) Run each value of n at least five times
+		// and take the average. (Make sure you re-seed the random number generator appropriately!)
+
+
+// GOAL 3 : design tests that prove correctness
+
+
+
+
+// methods to create different types of graphs (adjLists)
+
+// methods to run prim's algorithm
+
+// methods to print

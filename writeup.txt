@@ -1,0 +1,15 @@
+Writeup TODO:
+--------1. 
+• A table listing the average tree size for several values of n. (A graph is insufficient, although you can
+have that too; we need to see the actual numbers.)
+• A description of your guess for the function f(n).
+
+---------2. 
+Which algorithm did you use, and why?
+• Are the growth rates (the f(n)) surprising? Can you come up with an explanation for them?
+• How long does it take your algorithm to run? Does this make sense? Do you notice things like the
+cache size of your computer having an effect?
+• Did you have any interesting experiences with the random number generator? Do you trust it?
+
+You will also be submitting your code electronically to the libcs124 directory, so that we may test it
+as necessary
