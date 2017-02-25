@@ -1,43 +1,147 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
 #include <assert.h>
 
-struct graph {
-    int n;
-    int dimension; // 0, 2, 3, 4
-    struct adjList {
-        int vertexId;
-        int numNbrs;
-        int len;        /* number of slots in array */
-        double x;
-        double y;
-        double z;
-        double w;
-        struct edge {
-            int nbrId;
-            int weightFromP;
-            // int sink;           /* other end of edge */
-            // int weight;         /* used for shortest-path algorithms */
-        } edges[1];    /* actual list of successors */
-    } *vertices[1];
-};
 
-typedef struct graph *Graph;
+/* Adjacency list node*/
+typedef struct adjlist_node
+{
+    int vertex;                /*Index to adjacency list array*/
+    struct adjlist_node *next; /*Pointer to the next node*/
+    int weightFromP;
+}adjlist_node_t, *adjlist_node_p;
 
-//void populateGraph0(int n);  // implemented as adjacency list with dynamically resizing array to store edges
-Graph generateGraph(int n, int dimension);
-void addEdge(Graph g, int src, int dest, int dimension);
-double calculateNewEdgeWeight(Graph g, int src, int dimension);
+/* Adjacency list */
+typedef struct adjlist
+{
+    int num_members;           /*number of members in the list (for future use)*/
+    adjlist_node_t *head;      /*head of the adjacency linked list*/
+}adjlist_t, *adjlist_p;
 
+/* Graph structure. A graph is an array of adjacency lists.
+   Size of array will be number of vertices in graph*/
+typedef struct graph
+{
+    int num_vertices;         /*Number of vertices*/
+    adjlist_p adjListArr;     /*Adjacency lists' array*/
+}graph_t, *graph_p;
+
+
+adjlist_node_p createNode(int v)
+{
+    adjlist_node_p newNode = (adjlist_node_p)malloc(sizeof(adjlist_node_t));
+    if(!newNode)
+        printf("bad\n" );
+
+    newNode->vertex = v;
+    newNode->next = NULL;
+
+    return newNode;
+}
+
+/* Function to create a graph with n vertices */
+graph_p createGraph(int n)
+{
+    int i;
+    graph_p graph = (graph_p)malloc(sizeof(graph_t));
+    if(!graph)
+        printf("bad\n" );
+    graph->num_vertices = n;
+
+
+    /* Create an array of adjacency lists*/
+    graph->adjListArr = (adjlist_p)malloc(n * sizeof(adjlist_t));
+    if(!graph->adjListArr)
+        printf("bad\n" );
+
+    for(i = 0; i < n; i++)
+    {
+        graph->adjListArr[i].head = NULL;
+        graph->adjListArr[i].num_members = 0;
+    }
+
+    return graph;
+}
+
+/*Destroys the graph*/
+void destroyGraph(graph_p graph)
+{
+    if(graph)
+    {
+        if(graph->adjListArr)
+        {
+            int v;
+            /*Free up the nodes*/
+            for (v = 0; v < graph->num_vertices; v++)
+            {
+                adjlist_node_p adjListPtr = graph->adjListArr[v].head;
+                while (adjListPtr)
+                {
+                    adjlist_node_p tmp = adjListPtr;
+                    adjListPtr = adjListPtr->next;
+                    free(tmp);
+                }
+            }
+            /*Free the adjacency list array*/
+            free(graph->adjListArr);
+        }
+        /*Free the graph*/
+        free(graph);
+    }
+}
+
+double calculateNewEdgeWeight(graph_p g, int src, int dimension) {
+    if (dimension == 0) {
+        double newX;
+        double newY;
+        double dist;
+        newX = (double) rand() / (double) RAND_MAX;
+        newY = (double) rand() / (double) RAND_MAX;
+        dist = sqrt(pow(g->vertices[src]->x - newX, 2) + pow(g->vertices[src]->y - newY, 2));
+        return dist;
+    }
+    return 0;
+}
+
+/* Adds an edge to a graph*/
+void addEdge(graph_t *graph, int src, int dest)
+{
+    calculateNewEdgeWeight
+    /* Add an edge from src to dst in the adjacency list*/
+    adjlist_node_p newNode = createNode(dest);
+    newNode->next = graph->adjListArr[src].head;
+    graph->adjListArr[src].head = newNode;
+    graph->adjListArr[src].num_members++;
+
+    /* Add an edge from dest to src also*/
+    newNode = createNode(src);
+    newNode->next = graph->adjListArr[dest].head;
+    graph->adjListArr[dest].head = newNode;
+    graph->adjListArr[dest].num_members++;
+
+}
+
+/* Function to print the adjacency list of graph*/
+void displayGraph(graph_p graph)
+{
+    int i;
+    for (i = 0; i < graph->num_vertices; i++)
+    {
+        adjlist_node_p adjListPtr = graph->adjListArr[i].head;
+        printf("\n%d: ", i);
+        while (adjListPtr)
+        {
+            printf("%d->", adjListPtr->vertex);
+            adjListPtr = adjListPtr->next;
+        }
+        printf("NULL\n");
+    }
+}
 
 
 int main(int argc, char* argv[]) {
-    // time_t t; // to pass to srand to seed..
-    // printf("got into main!!\n");
-    // printf("%i\n", (unsigned) time(NULL));
 	srand((unsigned) time(NULL));
     rand();
 
@@ -48,74 +152,28 @@ int main(int argc, char* argv[]) {
 	// for (int i = 0; i < argc; i++) {
 	// 	printf(" argv of %i is %s\n", i, argv[i]);
 	// }
-	int dimension = atoi(argv[4]);
-    Graph g = generateGraph(10, dimension);
-    addEdge(g, 1, 2, dimension);
-    
+
+    //
+	// int dimension = atoi(argv[4]);
+    // Graph g = generateGraph(10, dimension);
+    // populateGraph(g, 10, dimension);
+    // printGraph(g);
+
+
+    // addEdge(g, 1, 2, dimension);
     // graph_create(10);
 	// if(dimension == 0)
 	// 	populateGraph0(512);
-}
+    graph_p g = createGraph(5);
+    addEdge(g, 0, 1);
+    addEdge(g, 0, 4);
+    addEdge(g, 1, 2);
+    addEdge(g, 1, 3);
+    addEdge(g, 1, 4);
+    addEdge(g, 2, 3);
+    addEdge(g, 3, 4);
 
-// create vertices of graph
-Graph generateGraph(int n, int dimension)
-{
-    Graph g;
-    int i;
+    displayGraph(g);
 
-    g = malloc(sizeof(struct graph) + sizeof(struct adjList *) * n - 1);
-    assert(g);
-
-    g->n = n;
-
-    for(i = 0; i < n; i++) {
-        g->vertices[i] = malloc(sizeof(struct adjList));
-        assert(g->vertices[i]);
-
-        g->vertices[i]->vertexId = i;
-        g->vertices[i]->numNbrs = 0;
-        g->vertices[i]->len = 1;
-        // keep this sorted?
-    }
-    return g;
-}
-
-void addEdge(Graph g, int src, int dest, int dimension)
-{
-    while(g->vertices[src]->numNbrs >= g->vertices[src]->len)
-    {
-        g->vertices[src]->len *= 2;
-        g->vertices[src] = realloc(g->vertices[src], sizeof(struct edge) * (g->vertices[src]->len - 1) + sizeof(struct adjList));
-    }
-
-    if (dimension == 0)
-    {
-        double vertX;
-        double vertY;
-        vertX = (double) rand() / (double) RAND_MAX;
-        vertY = (double) rand() / (double) RAND_MAX;
-        g->vertices[src]->x = vertX;
-        g->vertices[src]->y = vertY;
-    }
-
-    g->vertices[src]->edges[g->vertices[src]->numNbrs].weightFromP = calculateNewEdgeWeight(g, src, dimension);
-    g->vertices[src]->edges[g->vertices[src]->numNbrs].nbrId = dest;
-    g->vertices[src]->numNbrs++;
-    // mark as not sorted?
-    //g->edges[src]->numNbrs += 1;
-    // g's edge count++?
-    return;
-}
-
-double calculateNewEdgeWeight(Graph g, int src, int dimension) {
-    if (dimension == 0) {
-        double newX;
-        double newY;
-        double dist;
-        newX = (double) rand() / (double) RAND_MAX;
-        newY = (double) rand() / (double) RAND_MAX;
-        dist = sqrt(pow(g->vertices[src]->x - newX, 2) + pow(g->vertices[src]->y - newY, 2));
-        return dist;
-    }
     return 0;
 }
