@@ -39,6 +39,13 @@ typedef struct set
     node_p setV;
 } set_t, *set_p;
 
+typedef struct mst_node
+{
+    int vertex;
+    double wt;
+} mst_node_t, *mst_node_p;
+
+
 node_p createNode(int v, int dimension)
 {
     node_p newNode = (node_p)malloc(sizeof(node_t));
@@ -90,7 +97,6 @@ graph_p createGraph(int n)
 
     return graph;
 }
-
 
 double calcEuclidian(node_p src, node_p dest, int dimension) {
     double sumDiffSquare;
@@ -208,7 +214,7 @@ void prim(graph_p g)
     double dist[g->V];
 
     set_p mst[g->V];
-    set_p H[g->V];
+    mst_node_p H[g->V];  // heap implemented as an array for now
 
     int i, index;
     index = 0;
@@ -216,8 +222,11 @@ void prim(graph_p g)
     {
         //printf("VERTEX: %i\n", g->alistArr[i].head->vertex);
         dist[index] = MAX_WT;
-        printf("%i\n", i);
+        //printf("%i\n", i);
         //printf("%f\n", MAX_WT);
+
+        // TODO:
+        // prev[v] := nil
         index++;
     }
 
