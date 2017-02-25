@@ -121,20 +121,23 @@ void addEdge(graph_t *graph, int src, int dest, int dimension)
 {
     double dist;
     /* Add an edge from src to dst in the adjacency list*/
-    adjlist_node_p n1, tmp = createNode(src, dimension);
+    adjlist_node_p n1 = createNode(src, dimension);
+    printf("N1 V:  %i\n", n1->vertex);
+
     adjlist_node_p n2 = createNode(dest, dimension);
+    printf("N2 V:  %i\n", n2->vertex);
+
     dist = calcNewEdgeWt(n1, n2, dimension);
 
 
-    tmp->next = graph->adjListArr[src].head;
-    graph->adjListArr[src].head = tmp;
+    n2->next = graph->adjListArr[src].head;
+    graph->adjListArr[src].head = n2;
     graph->adjListArr[src].num_members++;
     //graph->adjListArr[src].wt = dist;
 
-    tmp = n2;
     /* Add an edge from dest to src also*/
-    tmp->next = graph->adjListArr[dest].head;
-    graph->adjListArr[dest].head = tmp;
+    n1->next = graph->adjListArr[dest].head;
+    graph->adjListArr[dest].head = n1;
     graph->adjListArr[dest].num_members++;
     //graph->adjListArr[dest].wt = dist;
 }
@@ -180,14 +183,39 @@ int main(int argc, char* argv[]) {
     // graph_create(10);
 	// if(dimension == 0)
 	// 	populateGraph0(512);
-    graph_p g = createGraph(5);
-    addEdge(g, 0, 1, dimension);
-    addEdge(g, 0, 4, dimension);
-    addEdge(g, 1, 2, dimension);
-    addEdge(g, 1, 3, dimension);
-    addEdge(g, 1, 4, dimension);
-    addEdge(g, 2, 3, dimension);
-    addEdge(g, 3, 4, dimension);
+    int n;
+    n = 10;
+    graph_p g = createGraph(n);
+    int i, j;
+    for(i = 0; i < n; i++)
+    {
+        for(j=0; j<i; j++)
+        {
+            if(i!=j)
+            {
+                //printf("i: %i and j: %i\n", i, j);
+                addEdge(g, i, j, dimension);
+
+            }
+        }
+    }
+    // addEdge(g, 0, 1, dimension);
+    // addEdge(g, 0, 4, dimension);
+    // addEdge(g, 1, 2, dimension);
+    // addEdge(g, 1, 3, dimension);
+    // addEdge(g, 1, 4, dimension);
+    // addEdge(g, 2, 3, dimension);
+    // addEdge(g, 3, 4, dimension);
+    // addEdge(g, 0, 1, dimension);
+    // addEdge(g, 0, 4, dimension);
+    // addEdge(g, 1, 2, dimension);
+    // addEdge(g, 1, 3, dimension);
+    // addEdge(g, 1, 4, dimension);
+    // addEdge(g, 2, 3, dimension);
+    // addEdge(g, 3, 4, dimension);
+
+
+
 
     displayGraph(g);
 
