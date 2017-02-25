@@ -4,6 +4,8 @@
 #include <math.h>
 #include <assert.h>
 
+#define MAX_WT 10000
+
 /* Adjacency list node*/
 typedef struct node
 {
@@ -31,6 +33,7 @@ typedef struct graph
     alist_p alistArr;     /*Adjacency lists' array*/
 } graph_t, *graph_p;
 
+// meant to be a set of nodes - used for making an array of vertices
 typedef struct set
 {
     node_p setV;
@@ -201,28 +204,23 @@ void destroyGraph(graph_p g)
 void prim(graph_p g)
 {
     // initialize prev, prev arrays of size V
+    set_p prev[g->V];
+    double dist[g->V];
 
-    //set_p prev = (set_p) malloc(g->V * sizeof(set_t));
-    set_p prev[g->V];// = (set_p) malloc(sizeof(set_t) * );
-    int i, d, index;
-    d = sizeof(prev);
+    set_p mst[g->V];
+    set_p H[g->V];
+
+    int i, index;
     index = 0;
-    for(i = 0; i < d; i += sizeof(prev[i]))
+    for(i = 0; i < sizeof(prev); i += sizeof(prev[i]))
     {
-        // printf("index equals: %i\n", index);
-        // printf("i equals:  %i\n", i);
-        // printf("VERTEX: %i\n", g->alistArr[index].head->vertex);
-        // printf("WEIGHT: %f\n\n", g->alistArr[index].head->wt);
-
-
-        //prev[i]->setV = createVertex(g->alistArr[index].head=>vertex);
-        //prev[i]->setV->vertex = g->alistArr[index].head=>vertex;
-
-        //prev[i]->setV->wt = g->alistArr[index].head->wt;
-
-        //printf("prev[i] :  %f\n", prev[i]->setV->wt);
+        //printf("VERTEX: %i\n", g->alistArr[i].head->vertex);
+        dist[index] = MAX_WT;
+        printf("%i\n", i);
+        //printf("%f\n", MAX_WT);
         index++;
     }
+
     return;
 }
 
