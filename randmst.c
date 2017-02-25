@@ -12,10 +12,10 @@ struct graph {
         int vertexId;
         int numNbrs;
         int len;        /* number of slots in array */
-        int x;
-        int y;
-        int z;
-        int w;
+        double x;
+        double y;
+        double z;
+        double w;
         struct edge {
             int nbrId;
             int weightFromP;
@@ -30,24 +30,28 @@ typedef struct graph *Graph;
 //void populateGraph0(int n);  // implemented as adjacency list with dynamically resizing array to store edges
 Graph generateGraph(int n, int dimension);
 void addEdge(Graph g, int src, int dest, int dimension);
-double calculateEdgeWeight(Graph g, int src, int dimension);
+double calculateNewEdgeWeight(Graph g, int src, int dimension);
 
 
 
 int main(int argc, char* argv[]) {
-	time_t t; // to pass to srand to seed..
-	srand((unsigned) time(&t));
+    // time_t t; // to pass to srand to seed..
+    // printf("got into main!!\n");
+    // printf("%i\n", (unsigned) time(NULL));
+	srand((unsigned) time(NULL));
+    rand();
+
 	if (argc != 5) {
 		printf("usage: ./randmst 0 numpoints numtrials dimension\n");
 		return 1;
 	}
-	for (int i = 0; i < argc; i++) {
-		printf(" argv of %i is %s\n", i, argv[i]);
-	}
+	// for (int i = 0; i < argc; i++) {
+	// 	printf(" argv of %i is %s\n", i, argv[i]);
+	// }
 	int dimension = atoi(argv[4]);
-    printf("%i\n", dimension);
-    Graph e = generateGraph(10, dimension);
-    addEdge(e, 1, 2, dimension);
+    Graph g = generateGraph(10, dimension);
+    addEdge(g, 1, 2, dimension);
+    
     // graph_create(10);
 	// if(dimension == 0)
 	// 	populateGraph0(512);
@@ -78,16 +82,23 @@ Graph generateGraph(int n, int dimension)
 
 void addEdge(Graph g, int src, int dest, int dimension)
 {
-    if (dimension == 0)
-        printf("dimesnio is zero! : %i\n", dimension);
-
     while(g->vertices[src]->numNbrs >= g->vertices[src]->len)
     {
         g->vertices[src]->len *= 2;
         g->vertices[src] = realloc(g->vertices[src], sizeof(struct edge) * (g->vertices[src]->len - 1) + sizeof(struct adjList));
     }
 
-    g->vertices[src]->edges[g->vertices[src]->numNbrs].weightFromP = calculateEdgeWeight(g, src, dimension);
+    if (dimension == 0)
+    {
+        double vertX;
+        double vertY;
+        vertX = (double) rand() / (double) RAND_MAX;
+        vertY = (double) rand() / (double) RAND_MAX;
+        g->vertices[src]->x = vertX;
+        g->vertices[src]->y = vertY;
+    }
+
+    g->vertices[src]->edges[g->vertices[src]->numNbrs].weightFromP = calculateNewEdgeWeight(g, src, dimension);
     g->vertices[src]->edges[g->vertices[src]->numNbrs].nbrId = dest;
     g->vertices[src]->numNbrs++;
     // mark as not sorted?
@@ -96,27 +107,15 @@ void addEdge(Graph g, int src, int dest, int dimension)
     return;
 }
 
-double calculateEdgeWeight(Graph g, int src, int dimension) {
+double calculateNewEdgeWeight(Graph g, int src, int dimension) {
     if (dimension == 0) {
         double newX;
         double newY;
-        double test;
-        int r;
-        int newR;
-        rand();
-        newR = rand();
-        printf("RAND() IS : %i\n", r);
-        printf("newR IS : %i\n", newR);
-
-        newX = (double) newR / (double) RAND_MAX;
-        // newY = (double) rand() % 1.0;
-        // newY = rand();
-        // test = rand();
-
-        printf("newX IS : %f\n", newX);
-        // printf("newY: %f\n", newY);
-        // printf("test: %f\n", test);
-
+        double dist;
+        newX = (double) rand() / (double) RAND_MAX;
+        newY = (double) rand() / (double) RAND_MAX;
+        dist = sqrt(pow(g->vertices[src]->x - newX, 2) + pow(g->vertices[src]->y - newY, 2));
+        return dist;
     }
-    return 0.5;
+    return 0;
 }
