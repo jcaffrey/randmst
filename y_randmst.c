@@ -45,17 +45,12 @@ int main(int argc, char* argv[]) {
 		printf("usage: ./randmst 0 numpoints numtrials dimension\n");
 		return 1;
 	}
-	// for (int i = 0; i < argc; i++) {
-	// 	printf(" argv of %i is %s\n", i, argv[i]);
-	// }
+
 	int dimension = atoi(argv[4]);
     Graph g = generateGraph(10, dimension);
     populateGraph(g, 10, dimension);
     printGraph(g);
-    // addEdge(g, 1, 2, dimension);
-    // graph_create(10);
-	// if(dimension == 0)
-	// 	populateGraph0(512);
+
 }
 
 // create vertices of graph
@@ -104,7 +99,7 @@ void addEdge(Graph g, int src, int dest, int dimension)
     //     g->vertices[src] = realloc(g->vertices[src], sizeof(struct edge) * (g->vertices[src]->len - 1) + sizeof(struct adjList));
     // }
 
-    if (dimension == 0)
+    if (dimension == 2)
     {
         double vertX;
         double vertY;
@@ -124,7 +119,7 @@ void addEdge(Graph g, int src, int dest, int dimension)
 }
 
 double calculateNewEdgeWeight(Graph g, int src, int dimension) {
-    if (dimension == 0) {
+    if (dimension == 2) {
         double newX;
         double newY;
         double dist;
