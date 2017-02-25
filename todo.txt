@@ -35,9 +35,29 @@
 
 
 
-
-// methods to create different types of graphs (adjLists)
-
 // methods to run prim's algorithm
+	// MIN_HEAP STUFF:
+	// Min-Heapify (H, N)
+	// Extract-Min (H)
+	// Build-Heap (A)
+	// Insert(H, v, weight)
 
+	// PRIM'S STUFF:
+	// initialize dist, prev arrays of size V
+	// initialize min heap of vertices
+	// S:=set of vertices to hold MST, initially empty
+	// H: min heap of V
+	// pick starting vertex --> add to H, set as root of Prim's
+	// for each vertex
+		//initialize dist to all other vertices to infnty
+		// init prev to NIL
+	// set dist to root to 0
+	// while heap not empty
+		// v:= deletemin(h)
+		// S+={v}
+		// for each edge with source v and sink not already in MST
+			// if dist[w] > length(v,w)
+				// dist[w]:=length(v,w)
+				// prev[w] := v
+				// insert(w, dist[w], H)
 // methods to print
