@@ -61,3 +61,27 @@
 				// prev[w] := v
 				// insert(w, dist[w], H)
 // methods to print
+
+
+
+Procedure Prim(G(V,E), s) v,w: vertices
+dist: array[V ] of integer
+prev: array[V ] of vertices
+S: set of vertices, initially empty H: priority heap of V
+H :={s:0}
+for v ∈ V do
+	dist[v] := ∞, prev[v] :=nil
+rof
+
+dist[s] := 0
+while H != 0
+	v := deletemin(h)
+	S := S∪{v}
+	for (v, w) ∈ E and w ∈ V − S do
+		if dist[w] > length(v, w)
+			dist[w] := length(v,w)
+			prev[w] := v
+			insert(w,dist[w],H)
+		fi
+	rof
+end while end Prim
