@@ -19,7 +19,7 @@ typedef struct node
 /* Adjacency list */
 typedef struct alist
 {
-    int num_members;           /*number of members in the list (for future use)*/
+    int E;           /*number of members in the list (for future use)*/
     node_t *head;      /*head of the adjacency linked list*/
 } alist_t, *alist_p;
 
@@ -27,7 +27,7 @@ typedef struct alist
    Size of array will be number of vertices in graph*/
 typedef struct graph
 {
-    int num_vertices;         /*Number of vertices*/
+    int V;         /*Number of vertices*/
     alist_p alistArr;     /*Adjacency lists' array*/
 } graph_t, *graph_p;
 
@@ -69,7 +69,7 @@ graph_p createGraph(int n)
     graph_p graph = (graph_p)malloc(sizeof(graph_t));
     if(!graph)
         printf("bad\n" );
-    graph->num_vertices = n;
+    graph->V = n;
 
     graph->alistArr = (alist_p)malloc(n * sizeof(alist_t));
     if(!graph->alistArr)
@@ -78,7 +78,7 @@ graph_p createGraph(int n)
     for(i = 0; i < n; i++)
     {
         graph->alistArr[i].head = NULL;
-        graph->alistArr[i].num_members = 0;
+        graph->alistArr[i].E = 0;
     }
 
     return graph;
@@ -117,18 +117,17 @@ void addEdge(graph_t *graph, int src, int dest, int dimension)
 
     n2->next = graph->alistArr[src].head;
     graph->alistArr[src].head = n2;
-    graph->alistArr[src].num_members++;
+    graph->alistArr[src].E++;
 
     n1->next = graph->alistArr[dest].head;
     graph->alistArr[dest].head = n1;
-    graph->alistArr[dest].num_members++;
+    graph->alistArr[dest].E++;
 }
 
-/* Function to print the adjacency list of graph*/
 void displayGraph(graph_p graph)
 {
     int i;
-    for (i = 0; i < graph->num_vertices; i++)
+    for (i = 0; i < graph->V; i++)
     {
         node_p alistPtr = graph->alistArr[i].head;
         printf("\n%d: ", i);
@@ -139,7 +138,7 @@ void displayGraph(graph_p graph)
         }
         printf("NULL\n");
     }
-    for (i = 0; i < graph->num_vertices; i++)
+    for (i = 0; i < graph->V; i++)
     {
         node_p alistPtr = graph->alistArr[i].head;
         printf("\n%d: ", i);
@@ -168,7 +167,6 @@ void populateGraph(graph_p g, int n, int dimension)
 
 }
 
-/*Destroys the graph*/
 void destroyGraph(graph_p g)
 {
     if(g)
@@ -176,8 +174,7 @@ void destroyGraph(graph_p g)
         if(g->alistArr)
         {
             int v;
-            /*Free up the nodes*/
-            for (v = 0; v < g->num_vertices; v++)
+            for (v = 0; v < g->V; v++)
             {
                 node_p alistPtr = g->alistArr[v].head;
                 while (alistPtr)
@@ -187,10 +184,8 @@ void destroyGraph(graph_p g)
                     free(tmp);
                 }
             }
-            /*Free the adjacency list array*/
             free(g->alistArr);
         }
-        /*Free the graph*/
         free(g);
     }
 }
@@ -216,6 +211,8 @@ int main(int argc, char* argv[]) {
     graph_p g = createGraph(n);
     populateGraph(g, n, dimension);
     displayGraph(g);
+
+    destroyGraph(g);
 
     return 0;
 }
