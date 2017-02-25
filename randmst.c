@@ -35,24 +35,23 @@ typedef struct graph
 
 adjlist_node_p createNode(int v, int dimension)
 {
-
-    if (dimension == 0)
-    {
-        double vertX;
-        double vertY;
-        vertX = (double) rand() / (double) RAND_MAX;
-        vertY = (double) rand() / (double) RAND_MAX;
-        g->adjListArr[v]->x = vertX;
-        g->adjListArr[v]->y = vertY;
-    }
-
     adjlist_node_p newNode = (adjlist_node_p)malloc(sizeof(adjlist_node_t));
     if(!newNode)
         printf("bad\n" );
 
-    newNode->vertex = v;
-    newNode->next = NULL;
-
+    if (dimension == 0)
+    {
+        double x;
+        double y;
+        x = (double) rand() / (double) RAND_MAX;
+        y = (double) rand() / (double) RAND_MAX;
+        // g->adjListArr[v]->x = vertX;
+        // g->adjListArr[v]->y = vertY;
+        newNode->vertex = v;
+        newNode->x = x;
+        newNode->y = y;
+        newNode->next = NULL;
+    }
     return newNode;
 }
 
@@ -107,9 +106,11 @@ void destroyGraph(graph_p graph)
     }
 }
 
-double calculateNewEdgeWeight(graph_p g, int src, int dest, int dimension) {
+double calcNewEdgeWt(adjlist_node_p src, adjlist_node_p dest, int dimension) {
+    double dist;
     if (dimension == 0) {
-        dist = sqrt(pow(g->adjListArr[src].x - g->adjListArr[dest].x, 2) + pow(g->adjListArr[src].y - g->adjListArr[dest].y, 2));
+        printf("%i\n", src->vertex);
+        dist = sqrt(pow(src->x - dest->x, 2) + pow(src->y - dest->y, 2));
         return dist;
     }
     return 0;
@@ -119,20 +120,23 @@ double calculateNewEdgeWeight(graph_p g, int src, int dest, int dimension) {
 void addEdge(graph_t *graph, int src, int dest, int dimension)
 {
     double dist;
-    dist = calculateNewEdgeWeight(src, dest);
     /* Add an edge from src to dst in the adjacency list*/
-    adjlist_node_p newNode = createNode(dest, dimension);
-    newNode->next = graph->adjListArr[src].head;
-    graph->adjListArr[src].head = newNode;
-    graph->adjListArr[src].num_members++;
-    graph->adjListArr[src].wt = dist;
+    adjlist_node_p n1, tmp = createNode(src, dimension);
+    adjlist_node_p n2 = createNode(dest, dimension);
+    dist = calcNewEdgeWt(n1, n2, dimension);
 
+
+    tmp->next = graph->adjListArr[src].head;
+    graph->adjListArr[src].head = tmp;
+    graph->adjListArr[src].num_members++;
+    //graph->adjListArr[src].wt = dist;
+
+    tmp = n2;
     /* Add an edge from dest to src also*/
-    newNode = createNode(src, dimension);
-    newNode->next = graph->adjListArr[dest].head;
-    graph->adjListArr[dest].head = newNode;
+    tmp->next = graph->adjListArr[dest].head;
+    graph->adjListArr[dest].head = tmp;
     graph->adjListArr[dest].num_members++;
-    graph->adjListArr[dest].wt = dist;
+    //graph->adjListArr[dest].wt = dist;
 }
 
 /* Function to print the adjacency list of graph*/
