@@ -4,38 +4,37 @@
 #include <math.h>
 #include <assert.h>
 
-
 /* Adjacency list node*/
-typedef struct adjlist_node
+typedef struct node
 {
     int vertex;                /*Index to adjacency list array*/
-    struct adjlist_node *next; /*Pointer to the next node*/
+    struct node *next; /*Pointer to the next node*/
     double wt;
     double x;
     double y;
-    // double z;
-    // double f;
-} adjlist_node_t, *adjlist_node_p;
+    double z;
+    double f;
+} node_t, *node_p;
 
 /* Adjacency list */
-typedef struct adjlist
+typedef struct alist
 {
     int num_members;           /*number of members in the list (for future use)*/
-    adjlist_node_t *head;      /*head of the adjacency linked list*/
-} adjlist_t, *adjlist_p;
+    node_t *head;      /*head of the adjacency linked list*/
+} alist_t, *alist_p;
 
 /* Graph structure. A graph is an array of adjacency lists.
    Size of array will be number of vertices in graph*/
 typedef struct graph
 {
     int num_vertices;         /*Number of vertices*/
-    adjlist_p adjListArr;     /*Adjacency lists' array*/
+    alist_p alistArr;     /*Adjacency lists' array*/
 } graph_t, *graph_p;
 
 
-adjlist_node_p createNode(int v, int dimension)
+node_p createNode(int v, int dimension)
 {
-    adjlist_node_p newNode = (adjlist_node_p)malloc(sizeof(adjlist_node_t));
+    node_p newNode = (node_p)malloc(sizeof(node_t));
     if(!newNode)
         printf("bad\n" );
     if(dimension == 0)
@@ -43,24 +42,27 @@ adjlist_node_p createNode(int v, int dimension)
         newNode->wt = (double) rand() / (double) RAND_MAX;
     }
 
-    if (dimension == 2)
+    if (dimension >= 2)
     {
-        double x;
-        double y;
-        x = (double) rand() / (double) RAND_MAX;
-        y = (double) rand() / (double) RAND_MAX;
-        // g->adjListArr[v]->x = vertX;
-        // g->adjListArr[v]->y = vertY;
-        newNode->x = x;
-        newNode->y = y;
+        newNode->x = (double) rand() / (double) RAND_MAX;
+        newNode->y = (double) rand() / (double) RAND_MAX;
     }
+    if (dimension >= 3)
+    {
+        newNode->z = (double) rand() / (double) RAND_MAX;
+    }
+    if (dimension == 4)
+    {
+        newNode->f = (double) rand() / (double) RAND_MAX;
+    }
+
     newNode->vertex = v;
     newNode->next = NULL;
 
     return newNode;
 }
 
-/* Function to create a graph with n vertices */
+// instantiate vertices
 graph_p createGraph(int n)
 {
     int i;
@@ -69,110 +71,82 @@ graph_p createGraph(int n)
         printf("bad\n" );
     graph->num_vertices = n;
 
-
-    /* Create an array of adjacency lists*/
-    graph->adjListArr = (adjlist_p)malloc(n * sizeof(adjlist_t));
-    if(!graph->adjListArr)
+    graph->alistArr = (alist_p)malloc(n * sizeof(alist_t));
+    if(!graph->alistArr)
         printf("bad\n" );
 
     for(i = 0; i < n; i++)
     {
-        graph->adjListArr[i].head = NULL;
-        graph->adjListArr[i].num_members = 0;
+        graph->alistArr[i].head = NULL;
+        graph->alistArr[i].num_members = 0;
     }
 
     return graph;
 }
 
-/*Destroys the graph*/
-void destroyGraph(graph_p graph)
-{
-    if(graph)
+
+double calcEuclidian(node_p src, node_p dest, int dimension) {
+    double sumDiffSquare;
+    if (dimension >= 2)
     {
-        if(graph->adjListArr)
-        {
-            int v;
-            /*Free up the nodes*/
-            for (v = 0; v < graph->num_vertices; v++)
-            {
-                adjlist_node_p adjListPtr = graph->adjListArr[v].head;
-                while (adjListPtr)
-                {
-                    adjlist_node_p tmp = adjListPtr;
-                    adjListPtr = adjListPtr->next;
-                    free(tmp);
-                }
-            }
-            /*Free the adjacency list array*/
-            free(graph->adjListArr);
-        }
-        /*Free the graph*/
-        free(graph);
+        sumDiffSquare = pow(src->x - dest->x, 2) + pow(src->y - dest->y, 2);
     }
+    if (dimension >= 3)
+    {
+        sumDiffSquare = pow(src->z - dest->z, 2);
+    }
+    if (dimension == 4)
+    {
+        sumDiffSquare = pow(src->f - dest->f, 2);
+    }
+    return sqrt(sumDiffSquare);
 }
 
-double calcNewEdgeWt(adjlist_node_p src, adjlist_node_p dest, int dimension) {
-    double dist;
-    if (dimension == 2) {
-        printf("%i\n", src->vertex);
-        dist = sqrt(pow(src->x - dest->x, 2) + pow(src->y - dest->y, 2));
-        return dist;
-    }
-    return 0;
-}
-
-/* Adds an edge to a graph*/
 void addEdge(graph_t *graph, int src, int dest, int dimension)
 {
     double dist;
-    /* Add an edge from src to dst in the adjacency list*/
-    adjlist_node_p n1 = createNode(src, dimension);
-    printf("N1 V:  %i\n", n1->vertex);
 
-    adjlist_node_p n2 = createNode(dest, dimension);
-    printf("N2 V:  %i\n", n2->vertex);
-    if(dimension == 2)
+    node_p n1 = createNode(src, dimension);
+    node_p n2 = createNode(dest, dimension);
+    if(dimension != 0)
     {
-        dist = calcNewEdgeWt(n1, n2, dimension);
+        dist = calcEuclidian(n1, n2, dimension);
         n2->wt = dist;
         n1->wt = dist;
     }
 
-    n2->next = graph->adjListArr[src].head;
-    graph->adjListArr[src].head = n2;
-    graph->adjListArr[src].num_members++;
-    //graph->adjListArr[src].wt = dist;
+    n2->next = graph->alistArr[src].head;
+    graph->alistArr[src].head = n2;
+    graph->alistArr[src].num_members++;
 
-    /* Add an edge from dest to src also*/
-    n1->next = graph->adjListArr[dest].head;
-    graph->adjListArr[dest].head = n1;
-    graph->adjListArr[dest].num_members++;
-    //graph->adjListArr[dest].wt = dist;
+    n1->next = graph->alistArr[dest].head;
+    graph->alistArr[dest].head = n1;
+    graph->alistArr[dest].num_members++;
 }
 
 /* Function to print the adjacency list of graph*/
 void displayGraph(graph_p graph)
 {
     int i;
-    // for (i = 0; i < graph->num_vertices; i++)
-    // {
-    //     adjlist_node_p adjListPtr = graph->adjListArr[i].head;
-    //     printf("\n%d: ", i);
-    //     while (adjListPtr)
-    //     {
-    //         printf("%d->", adjListPtr->vertex);
-    //         adjListPtr = adjListPtr->next;
-    //     }
-    //     printf("NULL\n");
-    // }
     for (i = 0; i < graph->num_vertices; i++)
     {
-        adjlist_node_p adjListPtr = graph->adjListArr[i].head;
+        node_p alistPtr = graph->alistArr[i].head;
         printf("\n%d: ", i);
-        while (adjListPtr)
+        while (alistPtr)
         {
-            printf("%f->", adjListPtr->wt);
-            adjListPtr = adjListPtr->next;
+            printf("%d->", alistPtr->vertex);
+            alistPtr = alistPtr->next;
+        }
+        printf("NULL\n");
+    }
+    for (i = 0; i < graph->num_vertices; i++)
+    {
+        node_p alistPtr = graph->alistArr[i].head;
+        printf("\n%d: ", i);
+        while (alistPtr)
+        {
+            printf("%f->", alistPtr->wt);
+            alistPtr = alistPtr->next;
         }
         printf("NULL\n");
     }
@@ -189,9 +163,14 @@ int main(int argc, char* argv[]) {
 	}
 
 	int dimension = atoi(argv[4]);
+    if (dimension != 0 && dimension != 2 && dimension != 3 && dimension != 4)
+    {
+        printf("Please enter valid dimensions (ie. 0, 2, 3, 4)\n");
+        return 1;
+    }
 
     int n;
-    n = 10;
+    n = 10;  // 10k took 8 seconds
     graph_p g = createGraph(n);
     int i, j;
     for(i = 0; i < n; i++)
@@ -201,12 +180,41 @@ int main(int argc, char* argv[]) {
             if(i!=j)
             {
                 addEdge(g, i, j, dimension);
-
             }
         }
     }
-
-    displayGraph(g);
-
     return 0;
+}
+
+
+
+
+
+
+
+/*Destroys the graph*/
+void destroyGraph(graph_p graph)
+{
+    if(graph)
+    {
+        if(graph->alistArr)
+        {
+            int v;
+            /*Free up the nodes*/
+            for (v = 0; v < graph->num_vertices; v++)
+            {
+                node_p alistPtr = graph->alistArr[v].head;
+                while (alistPtr)
+                {
+                    node_p tmp = alistPtr;
+                    alistPtr = alistPtr->next;
+                    free(tmp);
+                }
+            }
+            /*Free the adjacency list array*/
+            free(graph->alistArr);
+        }
+        /*Free the graph*/
+        free(graph);
+    }
 }
