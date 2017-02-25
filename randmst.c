@@ -152,6 +152,48 @@ void displayGraph(graph_p graph)
     }
 }
 
+void populateGraph(graph_p g, int n, int dimension)
+{
+    int i, j;
+    for(i = 0; i < n; i++)
+    {
+        for(j=0; j<i; j++)
+        {
+            if(i!=j)
+            {
+                addEdge(g, i, j, dimension);
+            }
+        }
+    }
+
+}
+
+/*Destroys the graph*/
+void destroyGraph(graph_p g)
+{
+    if(g)
+    {
+        if(g->alistArr)
+        {
+            int v;
+            /*Free up the nodes*/
+            for (v = 0; v < g->num_vertices; v++)
+            {
+                node_p alistPtr = g->alistArr[v].head;
+                while (alistPtr)
+                {
+                    node_p tmp = alistPtr;
+                    alistPtr = alistPtr->next;
+                    free(tmp);
+                }
+            }
+            /*Free the adjacency list array*/
+            free(g->alistArr);
+        }
+        /*Free the graph*/
+        free(g);
+    }
+}
 
 int main(int argc, char* argv[]) {
 	srand((unsigned) time(NULL));
@@ -172,49 +214,8 @@ int main(int argc, char* argv[]) {
     int n;
     n = 10;  // 10k took 8 seconds
     graph_p g = createGraph(n);
-    int i, j;
-    for(i = 0; i < n; i++)
-    {
-        for(j=0; j<i; j++)
-        {
-            if(i!=j)
-            {
-                addEdge(g, i, j, dimension);
-            }
-        }
-    }
+    populateGraph(g, n, dimension);
+    displayGraph(g);
+
     return 0;
-}
-
-
-
-
-
-
-
-/*Destroys the graph*/
-void destroyGraph(graph_p graph)
-{
-    if(graph)
-    {
-        if(graph->alistArr)
-        {
-            int v;
-            /*Free up the nodes*/
-            for (v = 0; v < graph->num_vertices; v++)
-            {
-                node_p alistPtr = graph->alistArr[v].head;
-                while (alistPtr)
-                {
-                    node_p tmp = alistPtr;
-                    alistPtr = alistPtr->next;
-                    free(tmp);
-                }
-            }
-            /*Free the adjacency list array*/
-            free(graph->alistArr);
-        }
-        /*Free the graph*/
-        free(graph);
-    }
 }
