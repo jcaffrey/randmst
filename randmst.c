@@ -201,24 +201,24 @@ void destroyGraph(graph_p g)
 void prim(graph_p g)
 {
     // initialize dist, prev arrays of size V
-    //printf("%i\n", g->V);
+
     //set_p dist = (set_p) malloc(g->V * sizeof(set_t));
-    //printf("%zu\n", sizeof(set_t));
     set_p dist[g->V];// = (set_p) malloc(sizeof(set_t) * );
-    int i;
-    printf("%zu\n", sizeof(dist));
-    int d, index;
+    int i, d, index;
     d = sizeof(dist);
     index = 0;
     for(i = 0; i < d; i += sizeof(dist[i]))
     {
-        printf("index equals: %i\n", index);
-        printf("i equals:  %i\n", i);
-        printf("VERTEX: %i\n", g->alistArr[index].head->vertex);
-        printf("WEIGHT: %f\n\n", g->alistArr[index].head->wt);
+        // printf("index equals: %i\n", index);
+        // printf("i equals:  %i\n", i);
+        // printf("VERTEX: %i\n", g->alistArr[index].head->vertex);
+        // printf("WEIGHT: %f\n\n", g->alistArr[index].head->wt);
 
 
-//        dist[i]->setV = g->alistArr[index].head;
+        //dist[i]->setV = createVertex(g->alistArr[index].head=>vertex);
+        //dist[i]->setV->vertex = g->alistArr[index].head=>vertex;
+
+        //dist[i]->setV->wt = g->alistArr[index].head->wt;
 
         //printf("dist[i] :  %f\n", dist[i]->setV->wt);
         index++;
