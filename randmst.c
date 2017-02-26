@@ -319,7 +319,7 @@ double prim(graph_p g)
     mstWeight = 0;
     // initialize prev, prev arrays of size V
     double dist[g->V];
-    mst_node_p prev[g->V]; // will this work for large n?
+    //mst_node_p prev[g->V]; // will this work for large n?
 
     mst_node_p mst[g->V];
 
@@ -342,7 +342,7 @@ double prim(graph_p g)
     mst_node_p rootNode = createMSTNode(0, 24.0);
     insert(H, rootNode);
     // mst_node_p r = createMSTNode(8, 12.0);
-    // THIS CAUSES SEGFAULT 
+    // THIS CAUSES SEGFAULT
     // insert(H, r);
 
     mst_node_p v = deleteMin(H);
