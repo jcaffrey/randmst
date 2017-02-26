@@ -320,33 +320,64 @@ double prim(graph_p g)
     // initialize prev, prev arrays of size V
     double dist[g->V];
     //mst_node_p prev[g->V]; // will this work for large n?
+    int inMst[g->V];
 
     mst_node_p mst[g->V];
 
-    min_heap_p H = initMinHeap(g->V);  // heap implemented as an array for now
+    //min_heap_p H = initMinHeap(g->V);  // heap implemented as an array for now
 
 
-    int i, index;
-    index = 0;
-    for(i = 0; i < sizeof(prev); i += sizeof(prev[i]))
+    int i;
+    for(i = 0; i < g->V; i++)
     {
-        dist[index] = MAX_WT;
-
-        mst_node_p initNode = createMSTNode(index, -1);
-        prev[i] = initNode;
-
-        index++;
+        dist[i] = MAX_WT;
+        inMst[i] = 0;
     }
 
-    dist[0] = 0.0;
-    mst_node_p rootNode = createMSTNode(0, 24.0);
-    insert(H, rootNode);
-    // mst_node_p r = createMSTNode(8, 12.0);
-    // THIS CAUSES SEGFAULT
-    // insert(H, r);
 
-    mst_node_p v = deleteMin(H);
-    printf("%f\n", v->wt);
+    dist[0] = 0.0;
+    // int n = g->V;
+    int u;
+    node_p v;
+    // graph is complete so can do each node one at a time and never have to look behind us once
+    // we add a node
+    for(u = 0; u < g->V; u++)
+    {
+        node_p alistPtr = g->alistArr[u].head;
+        while(alistPtr && inMst[u] == 0) //&& alistPtr->vertex != inMst[u])
+        {
+    //        if(inMst[u] == 0)  //&& inMst[u] == 0
+    //        {
+            printf("u = %i \n", u);
+            printf("Vertex = %i\n\n", alistPtr->vertex);
+
+                // find lowest weight edge leaving u
+                // printf("%f\n", dist[v]);
+                // if(dist[v] > alistPtr->wt)
+                // {
+                //     dist[v] = alistPtr->wt;
+                //     inMst[v] = 1;
+                //     printf("V %i ADDED W/ WEIGHT: %f = %f\n", v, dist[v], alistPtr->wt);
+                // }
+
+            //}
+            alistPtr = alistPtr->next;
+
+        }
+        inMst[0] = 1;
+
+
+        // for node not in MST
+
+
+    }
+    // printf("%f\n", g->arr);
+    // mst_node_p u;
+    // for(u = 0;)
+
+
+    //mst_node_p v = deleteMin(H);
+    //printf("%f\n", v->wt);
 
     return 0.0;
 }
@@ -369,10 +400,10 @@ int main(int argc, char* argv[])
     }
 
     int n;
-    n = 5;  // 10k took 8 seconds
+    n = 4;  // 10k took 8 seconds
     graph_p g = createGraph(n);
     populateGraph(g, n, dimension);
-    //displayGraph(g);
+    displayGraph(g);
 
     prim(g);
 
