@@ -319,18 +319,18 @@ double prim(graph_p g)
     index = 0;
     for(i = 0; i < sizeof(prev); i += sizeof(prev[i]))
     {
-        //printf("VERTEX: %i\n", g->alistArr[i].head->vertex);
         dist[index] = MAX_WT;
-        mst_node_p initNode = createMSTNode(index, MAX_WT);
-        //printf("%zu\n", sizeof(initNode));
-        &prev[i] = *initNode;
-        //printf("%i\n", i);
-        // printf("%f\n", dist[index]);
-        //printf("%f\n", prev[i]->wt);
 
-        // TODO:
-        // prev[v] := nil
+        mst_node_p initNode = createMSTNode(index, -1);
+        prev[i] = initNode;
+
         index++;
+    }
+
+    dist[0] = 0.0;
+    for (i = 0; i<g->V; i++)
+    {
+        printf("%f\n", dist[i]);
     }
 
     return 0.0;
