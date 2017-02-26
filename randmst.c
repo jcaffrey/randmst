@@ -34,10 +34,10 @@ typedef struct graph
 } graph_t, *graph_p;
 
 // meant to be a set of nodes - used for making an array of vertices
-typedef struct set
-{
-    node_p setV;
-} set_t, *set_p;
+// typedef struct set
+// {
+//     node_p setV;
+// } set_t, *set_p;
 
 typedef struct mst_node
 {
@@ -206,32 +206,41 @@ void destroyGraph(graph_p g)
     }
 }
 
+// mst_node_p createMSTNode(int v, double wt)
+// {
+//     mst_node_p newMSTNode = (mst_node_p) malloc(sizeof(mst_node_t));
+//     newMSTNode->vertex = v;
+//     newMSTNode->wt = wt;
+// }
+
 // set_p prim(graph_p g);
-void prim(graph_p g)
-{
-    // initialize prev, prev arrays of size V
-    set_p prev[g->V];
-    double dist[g->V];
-
-    set_p mst[g->V];
-    mst_node_p H[g->V];  // heap implemented as an array for now
-
-    int i, index;
-    index = 0;
-    for(i = 0; i < sizeof(prev); i += sizeof(prev[i]))
-    {
-        //printf("VERTEX: %i\n", g->alistArr[i].head->vertex);
-        dist[index] = MAX_WT;
-        //printf("%i\n", i);
-        //printf("%f\n", MAX_WT);
-
-        // TODO:
-        // prev[v] := nil
-        index++;
-    }
-
-    return;
-}
+// void prim(graph_p g)
+// {
+//     // initialize prev, prev arrays of size V
+//     node_p prev[g->V];
+//     double dist[g->V];
+//
+//     node_p mst[g->V];
+//     mst_node_p H[g->V];  // heap implemented as an array for now
+//
+//
+//     int i, index;
+//     index = 0;
+//     for(i = 0; i < sizeof(prev); i += sizeof(prev[i]))
+//     {
+//         //printf("VERTEX: %i\n", g->alistArr[i].head->vertex);
+//         dist[index] = MAX_WT;
+//         prev[i] = createMSTNode();
+//         printf("%i\n", i);
+//         //printf("%f\n", MAX_WT);
+//
+//         // TODO:
+//         // prev[v] := nil
+//         index++;
+//     }
+//
+//     return;
+// }
 
 int main(int argc, char* argv[]) {
 	srand((unsigned) time(NULL));
@@ -255,7 +264,7 @@ int main(int argc, char* argv[]) {
     populateGraph(g, n, dimension);
     displayGraph(g);
 
-    prim(g);
+    //prim(g);
 
 //    printf("%f\n", g->alistArr[2].head->wt);
 
