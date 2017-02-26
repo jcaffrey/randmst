@@ -331,49 +331,75 @@ double prim(graph_p g)
         inMst[i] = 0;
     }
 
-
     dist[0] = 0.0;
     // int n = g->V;
     int u;
 
     // graph is complete so can do each node one at a time and never have to look behind us once
     // we add a node
+    inMst[0] = 1;
+    node_p alistPtr = g->alistArr[0].head;
+    int best_i;
+    best_i = 0;
+    double best_wt;
+    best_wt = MAX_WT;
+
     for(u = 0; u < g->V; u++)
     {
-        double best_wt;
-        int best_i;
-        best_wt = MAX_WT;
-        node_p alistPtr = g->alistArr[u].head;
-        while(alistPtr)// && u != alistPtr->vertex)// && inMst[alistPtr->vertex] == 0)// && inMst[u] == 0) //&& alistPtr->vertex != inMst[u])
+        printf("OUTER FOR and u is: %i\n", u);
+
+        alistPtr = g->alistArr[u].head;
+
+        while(alistPtr  && inMst[alistPtr->vertex] == 0 && (inMst[u] == 1)) // || inMst[best_i] == 1))// && u != alistPtr->vertex)// && inMst[alistPtr->vertex] == 0)// && inMst[u] == 0) //&& alistPtr->vertex != inMst[u])
         {
-            if (u == alistPtr->vertex)
-                printf("u = alistPtr->vertx: \n" );
+
             // printf("u = %i \n", u);
             // printf("Vertex = %i\n", alistPtr->vertex);
             // printf("weight = %f\n\n", alistPtr->wt);
 
-            // find lowest weight edge leaving u
-            // repeatedly update
-            //if(dist[alistPtr->vertex] > alistPtr->wt)
-            if(best_wt > alistPtr->wt && inMst[alistPtr->vertex] == 0)
+            if(best_wt > alistPtr->wt)// || dist[alistPtr->vertex] < alistPtr->wt)// && inMst[alistPtr->vertex] == 0)
             {
                 best_wt = alistPtr->wt;
                 best_i = alistPtr->vertex;
-                //dist[alistPtr->vertex] = alistPtr->wt;
-                //inMst[alistPtr->vertex] = 1; // this should only be set on final update?
-                //printf("V %i ADDED W/ WEIGHT: %f = %f at LOOP: %i\n", alistPtr->vertex, dist[alistPtr->vertex], alistPtr->wt, u);
+            }
+            if(dist[alistPtr->vertex] < alistPtr->wt)
+            {
+                dist[alistPtr->vertex] = alistPtr->wt;
             }
 
             alistPtr = alistPtr->next;
+            printf("LOOPING AGAIN\n");
 
         }
-        printf("node selected to mst: %i\n", u);
-        printf("best index = %i\n", best_i);
-        printf("best weigth = %f\n\n", best_wt);
+        // printf("node selected to mst: %i\n", u);
+        if(best_wt <= dist[best_i])
+        {
+            printf("best index = %i\n", best_i);
+            printf("best weigth = %f\n\n", best_wt);
+            inMst[best_i] = 1;
+            dist[best_i] = best_wt;
 
-        inMst[best_i] = 1;
-        dist[best_i] = best_wt;
-        //inMst[0] = 1;
+            //alistPtr = g->alistArr[best_i].head;
+            best_wt = MAX_WT;
+        }
+        // else
+        // {
+        //     alistPtr = g->alistArr[u].head;
+        //     //alistPtr = g->alistArr[u].head;
+        //     //best_wt = MAX_WT;
+        // }
+        // printf("best_i %i was added inMst[best_i] %i\n", best_i, inMst[best_i]);
+        // printf("u is: %i and inMst[u] is : %i\n\n", u, inMst[u]);
+
+        // if(best_i  > u)
+        //     u = best_i;
+    }
+
+    for(i = 0; i < g->V; i++)
+    {
+        printf("DIST[%i] = %f\n", i, dist[i]);
+        printf("inMst[%i] = %i\n", i, inMst[i]);
+
     }
 
     return 0.0;
