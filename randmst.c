@@ -6,8 +6,8 @@
 
 #define MAX_WT 10.0
 #define PARENT(i) i / 2
-#define LEFT(i) 2 * i + 1
-#define RIGHT(i) 2 * i + 2
+#define LEFT(i) 2 * i
+#define RIGHT(i) 2 * i + 1
 
 /* Adjacency list node*/
 typedef struct node
@@ -339,15 +339,20 @@ double prim(graph_p g)
     }
 
     dist[0] = 0.0;
-    for (i = 0; i<g->V; i++)
-    {
-        printf("%f\n", dist[i]);
-    }
+    mst_node_p rootNode = createMSTNode(0, 24.0);
+    insert(H, rootNode);
+    // mst_node_p r = createMSTNode(8, 12.0);
+    // THIS CAUSES SEGFAULT 
+    // insert(H, r);
+
+    mst_node_p v = deleteMin(H);
+    printf("%f\n", v->wt);
 
     return 0.0;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
 	srand((unsigned) time(NULL));
     rand();
 
@@ -372,7 +377,6 @@ int main(int argc, char* argv[]) {
     prim(g);
 
 //    printf("%f\n", g->alistArr[2].head->wt);
-
     destroyGraph(g);
 
     return 0;
