@@ -4,7 +4,9 @@
 #include <math.h>
 #include <assert.h>
 
-#define MAX_WT 10000
+#define MAX_WT 10.0
+#define LEFT(i) 2 * i + 1
+#define RIGHT(i) 2 * i + 2
 
 /* Adjacency list node*/
 typedef struct node
@@ -71,8 +73,6 @@ void swap(mst_node_p* v1, mst_node_p* v2)
     *v2 = tmp;
 }
 
-#define LEFT(i) 2 * i
-#define RIGHT(i) 2 * i + 1
 
 
 void minHeapify(min_heap_p H, int N)
@@ -190,7 +190,8 @@ graph_p createGraph(int n)
     return graph;
 }
 
-double calcEuclidian(node_p src, node_p dest, int dimension) {
+double calcEuclidian(node_p src, node_p dest, int dimension)
+{
     double sumDiffSquare;
     if (dimension >= 2)
     {
@@ -300,34 +301,40 @@ void destroyGraph(graph_p g)
 
 
 
-// set_p prim(graph_p g);
-// void prim(graph_p g)
-// {
-//     // initialize prev, prev arrays of size V
-//     node_p prev[g->V];
-//     double dist[g->V];
-//
-//     node_p mst[g->V];
-//     mst_node_p H[g->V];  // heap implemented as an array for now
-//
-//
-//     int i, index;
-//     index = 0;
-//     for(i = 0; i < sizeof(prev); i += sizeof(prev[i]))
-//     {
-//         //printf("VERTEX: %i\n", g->alistArr[i].head->vertex);
-//         dist[index] = MAX_WT;
-//         prev[i] = createMSTNode();
-//         printf("%i\n", i);
-//         //printf("%f\n", MAX_WT);
-//
-//         // TODO:
-//         // prev[v] := nil
-//         index++;
-//     }
-//
-//     return;
-// }
+// set_p prim(graph_p g); - W/ BELOW WILL JUST RETURN THE WEIGHT OF THE TREE
+double prim(graph_p g)
+{
+    double mstWeight;
+    mstWeight = 0;
+    // initialize prev, prev arrays of size V
+    double dist[g->V];
+    mst_node_p prev[g->V]; // will this work for large n?
+
+    mst_node_p mst[g->V];
+
+    min_heap_p H = initMinHeap(g->V);  // heap implemented as an array for now
+
+
+    int i, index;
+    index = 0;
+    for(i = 0; i < sizeof(prev); i += sizeof(prev[i]))
+    {
+        //printf("VERTEX: %i\n", g->alistArr[i].head->vertex);
+        dist[index] = MAX_WT;
+        mst_node_p initNode = createMSTNode(index, MAX_WT);
+        //printf("%zu\n", sizeof(initNode));
+        &prev[i] = *initNode;
+        //printf("%i\n", i);
+        // printf("%f\n", dist[index]);
+        //printf("%f\n", prev[i]->wt);
+
+        // TODO:
+        // prev[v] := nil
+        index++;
+    }
+
+    return 0.0;
+}
 
 int main(int argc, char* argv[]) {
 	srand((unsigned) time(NULL));
@@ -349,9 +356,9 @@ int main(int argc, char* argv[]) {
     n = 10;  // 10k took 8 seconds
     graph_p g = createGraph(n);
     populateGraph(g, n, dimension);
-    displayGraph(g);
+    //displayGraph(g);
 
-    //prim(g);
+    prim(g);
 
 //    printf("%f\n", g->alistArr[2].head->wt);
 
