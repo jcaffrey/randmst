@@ -344,16 +344,18 @@ double prim(graph_p g)
         int best_i;
         best_wt = MAX_WT;
         node_p alistPtr = g->alistArr[u].head;
-        while(alistPtr)// && inMst[u] == 0) //&& alistPtr->vertex != inMst[u])
+        while(alistPtr)// && u != alistPtr->vertex)// && inMst[alistPtr->vertex] == 0)// && inMst[u] == 0) //&& alistPtr->vertex != inMst[u])
         {
-
-            printf("u = %i \n", u);
-            printf("Vertex = %i\n\n", alistPtr->vertex);
+            if (u == alistPtr->vertex)
+                printf("u = alistPtr->vertx: \n" );
+            // printf("u = %i \n", u);
+            // printf("Vertex = %i\n", alistPtr->vertex);
+            // printf("weight = %f\n\n", alistPtr->wt);
 
             // find lowest weight edge leaving u
             // repeatedly update
             //if(dist[alistPtr->vertex] > alistPtr->wt)
-            if(best_wt > alistPtr->wt)
+            if(best_wt > alistPtr->wt && inMst[alistPtr->vertex] == 0)
             {
                 best_wt = alistPtr->wt;
                 best_i = alistPtr->vertex;
@@ -365,8 +367,9 @@ double prim(graph_p g)
             alistPtr = alistPtr->next;
 
         }
+        printf("node selected to mst: %i\n", u);
         printf("best index = %i\n", best_i);
-        printf("best weigth = %f\n", best_wt);
+        printf("best weigth = %f\n\n", best_wt);
 
         inMst[best_i] = 1;
         dist[best_i] = best_wt;
