@@ -5,6 +5,7 @@
 #include <assert.h>
 
 #define MAX_WT 10.0
+#define PARENT(i) i / 2
 #define LEFT(i) 2 * i + 1
 #define RIGHT(i) 2 * i + 2
 
@@ -27,8 +28,6 @@ typedef struct alist
     node_t *head;      /*head of the adjacency linked list*/
 } alist_t, *alist_p;
 
-/* Graph structure. A graph is an array of adjacency lists.
-   Size of array will be number of vertices in graph*/
 typedef struct graph
 {
     int V;         /*Number of vertices*/
@@ -73,6 +72,18 @@ void swap(mst_node_p* v1, mst_node_p* v2)
     *v2 = tmp;
 }
 
+void insert(min_heap_p H, mst_node_p v)
+{
+    H->sz += 1;
+    H->heap_arr[H->sz] = v;
+
+    int N = H->sz;
+    while(N != 0 && H->heap_arr[PARENT(N)] < H->heap_arr[N])
+    {
+        swap(&H->heap_arr[PARENT(N)], &H->heap_arr[N]);
+        N = PARENT(N);
+    }
+}
 
 
 void minHeapify(min_heap_p H, int N)
@@ -353,7 +364,7 @@ int main(int argc, char* argv[]) {
     }
 
     int n;
-    n = 10;  // 10k took 8 seconds
+    n = 5;  // 10k took 8 seconds
     graph_p g = createGraph(n);
     populateGraph(g, n, dimension);
     //displayGraph(g);
