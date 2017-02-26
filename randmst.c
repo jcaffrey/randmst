@@ -45,6 +45,98 @@ typedef struct mst_node
     double wt;
 } mst_node_t, *mst_node_p;
 
+typedef struct min_heap
+{
+    int sz;
+    int V;
+    int *index;
+    mst_node_p * heap_arr;
+    //need an array?
+} min_heap_t, *min_heap_p;
+
+min_heap_p initMinHeap(int V)
+{
+    min_heap_p H = (min_heap_p) malloc(sizeof(min_heap_t));
+    H->index = (int*) malloc(V * sizeof(int));
+    H->sz = 0;
+    H->V = V;
+    H->heap_arr = (mst_node_p *) malloc(V * sizeof(mst_node_p));
+    return H;
+}
+
+void swap(mst_node_p* v1, mst_node_p* v2)
+{
+    mst_node_p tmp = *v1;
+    *v1 = *v2;
+    *v2 = tmp;
+}
+
+#define LEFT(i) 2 * i
+#define RIGHT(i) 2 * i + 1
+
+
+void minHeapify(min_heap_p H, int N)
+{
+    int l, r, smallest;
+    l = LEFT(N);
+    r = RIGHT(N);
+    if(l < H->sz && H->heap_arr[l]->wt < H->heap_arr[r]->wt)
+    {
+        smallest = l;
+    }
+    else
+    {
+        smallest = N;
+    }
+    if(r < H->sz && H->heap_arr[r]->wt < H->heap_arr[l]->wt)
+    {
+        smallest = r;
+    }
+    if (smallest != N)
+    {
+        mst_node_p s_node = H->heap_arr[smallest];
+        mst_node_p n_node = H->heap_arr[N];
+
+        H->index[s_node->vertex] = N;
+        H->index[n_node->vertex] = smallest;
+
+        swap(&H->heap_arr[smallest], &H->heap_arr[N]);
+
+        minHeapify(H, smallest);
+    }
+}
+
+mst_node_p deleteMin(min_heap_p H)
+{
+    if (H->sz == 0)
+    {
+        printf("deleteMin called on empty! \n");
+        return NULL;
+    }
+    mst_node_p min = H->heap_arr[0];
+
+    mst_node_p leaf = H->heap_arr[H->sz - 1];
+
+    // bring leaf to top
+    H->heap_arr[0] = leaf;
+
+    H->index[min->vertex] = H->sz - 1;
+    H->index[leaf->vertex] = 0; // hold invariant that root is 0
+
+    H->sz -= H->sz;
+    minHeapify(H, 0);
+
+    return min;
+}
+
+
+mst_node_p createMSTNode(int v, double wt)
+{
+    mst_node_p newMSTNode = (mst_node_p) malloc(sizeof(mst_node_t));
+    newMSTNode->vertex = v;
+    newMSTNode->wt = wt;
+    return newMSTNode;
+}
 
 node_p createNode(int v, int dimension)
 {
@@ -206,12 +298,7 @@ void destroyGraph(graph_p g)
     }
 }
 
-// mst_node_p createMSTNode(int v, double wt)
-// {
-//     mst_node_p newMSTNode = (mst_node_p) malloc(sizeof(mst_node_t));
-//     newMSTNode->vertex = v;
-//     newMSTNode->wt = wt;
-// }
+
 
 // set_p prim(graph_p g);
 // void prim(graph_p g)
