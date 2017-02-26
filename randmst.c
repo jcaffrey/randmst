@@ -324,9 +324,6 @@ double prim(graph_p g)
 
     mst_node_p mst[g->V];
 
-    //min_heap_p H = initMinHeap(g->V);  // heap implemented as an array for now
-
-
     int i;
     for(i = 0; i < g->V; i++)
     {
@@ -338,46 +335,43 @@ double prim(graph_p g)
     dist[0] = 0.0;
     // int n = g->V;
     int u;
-    node_p v;
+
     // graph is complete so can do each node one at a time and never have to look behind us once
     // we add a node
     for(u = 0; u < g->V; u++)
     {
+        double best_wt;
+        int best_i;
+        best_wt = MAX_WT;
         node_p alistPtr = g->alistArr[u].head;
-        while(alistPtr && inMst[u] == 0) //&& alistPtr->vertex != inMst[u])
+        while(alistPtr)// && inMst[u] == 0) //&& alistPtr->vertex != inMst[u])
         {
-    //        if(inMst[u] == 0)  //&& inMst[u] == 0
-    //        {
+
             printf("u = %i \n", u);
             printf("Vertex = %i\n\n", alistPtr->vertex);
 
-                // find lowest weight edge leaving u
-                // printf("%f\n", dist[v]);
-                // if(dist[v] > alistPtr->wt)
-                // {
-                //     dist[v] = alistPtr->wt;
-                //     inMst[v] = 1;
-                //     printf("V %i ADDED W/ WEIGHT: %f = %f\n", v, dist[v], alistPtr->wt);
-                // }
+            // find lowest weight edge leaving u
+            // repeatedly update
+            //if(dist[alistPtr->vertex] > alistPtr->wt)
+            if(best_wt > alistPtr->wt)
+            {
+                best_wt = alistPtr->wt;
+                best_i = alistPtr->vertex;
+                //dist[alistPtr->vertex] = alistPtr->wt;
+                //inMst[alistPtr->vertex] = 1; // this should only be set on final update?
+                //printf("V %i ADDED W/ WEIGHT: %f = %f at LOOP: %i\n", alistPtr->vertex, dist[alistPtr->vertex], alistPtr->wt, u);
+            }
 
-            //}
             alistPtr = alistPtr->next;
 
         }
-        inMst[0] = 1;
+        printf("best index = %i\n", best_i);
+        printf("best weigth = %f\n", best_wt);
 
-
-        // for node not in MST
-
-
+        inMst[best_i] = 1;
+        dist[best_i] = best_wt;
+        //inMst[0] = 1;
     }
-    // printf("%f\n", g->arr);
-    // mst_node_p u;
-    // for(u = 0;)
-
-
-    //mst_node_p v = deleteMin(H);
-    //printf("%f\n", v->wt);
 
     return 0.0;
 }
