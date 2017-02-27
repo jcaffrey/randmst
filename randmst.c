@@ -66,7 +66,7 @@ node_p* createArrOfNodes(int n, int dimension)
         vertices[i] = newNode;
         // idx += sizeof(node_p);
         // vertices[i] = newNode;
-        printf("VERTEX ID : %i\n", vertices[i]->vertex);
+        //printf("VERTEX ID : %i\n", vertices[i]->vertex);
 
     }
 
@@ -120,21 +120,46 @@ double prim(node_p * vertices, int n, int dimension)
     double best_wt;
     double tmp_wt;
 
+    best_i = 0;
+
+    //
+    // for(i = 0; i < n; i++)
+    // {
+    //     inMst[best_i] = true;
+    //     printf("ADDING : %f\n", best_wt);
+    //     totWt += best_wt;
+    //     // best_wt = MAX_WT;
+    //
+    //
+    //     for(j = 0; j < n; j++)
+    //     {
+    //         tmp_wt = calcEuclidian(vertices, j, best_i, dimension);
+    //         printf("TMP_WT: %f < best_wt %f?\n", tmp_wt, best_wt);
+    //         if(inMst[j] == false && tmp_wt < best_wt)
+    //         {
+    //             best_wt = tmp_wt;
+    //             printf("UPDATING BEST_I: %i\n", best_i);
+    //             best_i = j;
+    //
+    //         }
+    //
+    //     }
+    // }
 
     for(i = 0; i < n; i++)
     {
         inMst[best_i] = true;
-        printf("ADDING : %f\n", dist[best_i]);
+        //printf("ADDING : %f\n", dist[best_i]);
         totWt += dist[best_i];
-        //best_wt = .5;
 
         for(j = 0; j < n; j++)
         {
             tmp_wt = calcEuclidian(vertices, j, best_i, dimension);
-            printf("TMP_WT: %f < DIST[J] %f?\n", tmp_wt, dist[j]);
-            if(inMst[j] == false && dist[j] > tmp_wt)
+            //printf("TMP_WT: %f < DIST[J] %f?\n", tmp_wt, dist[j]);
+            if(dist[j] > tmp_wt)// && inMst[j] == false)
             {
                 dist[j] = tmp_wt;
+                //printf("UPDATING BEST_I: %i\n", best_i);
                 best_i = j;
             }
         }
