@@ -75,10 +75,7 @@ double calcEuclidian(node_p* vertices, int idx_1, int idx_2, int dimension)
     node_p node_2 = vertices[idx_2];
     double sumDiffSquare;
     sumDiffSquare = 0.0;
-    // if (dimension == 0)
-    // {
-    //     return (double) rand() / (double) RAND_MAX;
-    // }
+
     if (dimension >= 2)
     {
         sumDiffSquare = pow(node_1->x - node_2->x, 2) + pow(node_1->y - node_2->y, 2);
@@ -143,11 +140,7 @@ double mstWt(node_p * vertices, int V, int dimension)
                 dist_wts[v] = tmp_wt;
             }
         }
-        // ...going for one loop...
-        // for (u = 0; u < V; u++)
-        // {
-        //     if(in_mst[u] == false)
-        // }
+
     }
     tot_wt = 0.0;
     for(i = 0; i < V; i++)
