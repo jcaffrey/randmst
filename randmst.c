@@ -12,7 +12,7 @@ typedef struct node
 {
     int vertex;
     struct node *next;
-    double wt;
+    //double wt;
     double x;
     double y;
     double z;
@@ -26,10 +26,10 @@ node_p createNode(int v, int dimension)
     node_p newNode = (node_p)malloc(sizeof(node_t));
     if(!newNode)
         printf("bad\n" );
-    if(dimension == 0)
-    {
-        newNode->wt = (double) rand() / (double) RAND_MAX;
-    }
+    // if(dimension == 0)
+    // {
+    //     newNode->wt = (double) rand() / (double) RAND_MAX;
+    // }
 
     if (dimension >= 2)
     {
@@ -79,10 +79,10 @@ double calcEuclidian(node_p* vertices, int idx_1, int idx_2, int dimension)
     node_p node_2 = vertices[idx_2];
     double sumDiffSquare;
     sumDiffSquare = 0.0;
-    if (dimension == 0)
-    {
-        return fabs(node_1->wt - node_2->wt);
-    }
+    // if (dimension == 0)
+    // {
+    //     return (double) rand() / (double) RAND_MAX;
+    // }
     if (dimension >= 2)
     {
         sumDiffSquare = pow(node_1->x - node_2->x, 2) + pow(node_1->y - node_2->y, 2);
@@ -98,7 +98,9 @@ double calcEuclidian(node_p* vertices, int idx_1, int idx_2, int dimension)
     return sqrt(sumDiffSquare);
 }
 
-double mstWtOnRand(int V)
+
+// calc weight of MST 'naively'
+double mstWt(node_p * vertices, int V, int dimension)
 {
     double dist_keys[V];
     double dist_wts[V];
@@ -130,61 +132,15 @@ double mstWtOnRand(int V)
         in_mst[min_key] = true;
         for(v = 0; v < V; v++)
         {
-            // tmp_wt = calcEuclidian(vertices, min_key, v, dimension);
-            if(in_mst[v] == false && tmp_wt < dist_wts[v])
+            if (dimension == 0)
             {
-                dist_keys[v] = min_key;
-                dist_wts[v] = tmp_wt;
+                tmp_wt = (double) rand() / (double) RAND_MAX;
             }
-        }
-        // ...going for one loop...
-        // for (u = 0; u < V; u++)
-        // {
-        //     if(in_mst[u] == false)
-        // }
-    }
-    tot_wt = 0.0;
-    for(i = 0; i < V; i++)
-    {
-        tot_wt += dist_wts[i];
-    }
-    return tot_wt;
-
-}
-
-double mstWtOnGrid(node_p * vertices, int V, int dimension)
-{
-    double dist_keys[V];
-    double dist_wts[V];
-    bool in_mst[V];
-    int i, u, v, min_key;
-    double tmp_wt, tot_wt, min_wt;
-
-    for(i = 0; i < V; i++)
-    {
-        dist_wts[i] = INT_MAX;
-        in_mst[i] = false;
-    }
-
-    dist_wts[0] = 0;
-    dist_keys[0] = 0;
-
-    min_key = 0;
-    for(i = 0; i < V - 1; i++)
-    {
-        min_wt = INT_MAX;
-        for(u = 0; u < V; u++)
-        {
-            if (in_mst[u] == false && dist_wts[u] < min_wt)
+            else
             {
-                min_wt = dist_wts[u];
-                min_key = u;
+                tmp_wt = calcEuclidian(vertices, min_key, v, dimension);
+
             }
-        }
-        in_mst[min_key] = true;
-        for(v = 0; v < V; v++)
-        {
-            tmp_wt = calcEuclidian(vertices, min_key, v, dimension);
             if(in_mst[v] == false && tmp_wt < dist_wts[v])
             {
                 dist_keys[v] = min_key;
@@ -235,17 +191,18 @@ int main(int argc, char* argv[])
     double totWt;
     totWt = 0.0;
 
+    node_p * vertices;
     for(i = 0; i < numtrials; i++)
     {
         if (dimension == 0)
         {
-            totWt += mstWtOnRand(numpts);
+            totWt += mstWt(vertices, numpts, dimension);
         }
         else
         {
-            node_p * vertices = createArrOfNodes(numpts, dimension);
+            vertices = createArrOfNodes(numpts, dimension);
 
-            totWt += mstWtOnGrid(vertices, numpts, dimension);
+            totWt += mstWt(vertices, numpts, dimension);
         }
 
     }
@@ -253,5 +210,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-
-// TODO: MAKE PRIMS WORK FOR THE ZERO DIMENSION
