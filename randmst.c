@@ -96,92 +96,158 @@ double calcEuclidian(node_p* vertices, int idx_1, int idx_2, int dimension)
     return sqrt(sumDiffSquare);
 }
 
-double prim(node_p * vertices, int n, int dimension)
+double minKey(double key[], bool mstSet[], int V)
 {
-    printf("NUMPTS: %i\n", n);
-    double dist[n];
-    bool inMst[n];
-    double totWt;
-    totWt = 0.0;
+   // Initialize min value
+   double min = INT_MAX;
+   double min_index;
 
-    int i, j;
-    for(i = 0; i < n; i++)
-    {
-        dist[i] = MAX_WT;
-        inMst[0] = false;
-    }
-    inMst[0] = true;
-    dist[0] = 0.0;
+   for (int v = 0; v < V; v++)
+   {
+       if (mstSet[v] == false && key[v] < min)
+       {
+           min = key[v];
+           min_index = v;
+       }
+
+   }
+   return min_index;
+}
+
+double primMST(node_p * vertices, int V, int dimension)
+{
+     double parent[V]; // Array to store constructed MST
+     double key[V];   // Key values used to pick minimum weight edge in cut
+     bool mstSet[V];  // To represent set of vertices not yet included in MST
+     double tmp_wt;
+     // Initialize all keys as INFINITE
+     int i;
+     for (i = 0; i < V; i++)
+     {
+         key[i] = INT_MAX;
+         mstSet[i] = false;
+     }
+
+     key[0] = 0;     // Make key 0 so that this vertex is picked as first vertex
+     parent[0] = -1; // First node is always root of MST
+
+     for (int count = 0; count < V-1; count++)
+     {
+
+        int u = minKey(key, mstSet, V);
+    //    printf("MIN KEY%i\n", u);
+
+        mstSet[u] = true;
 
 
-
-
-    int best_i;
-    double best_wt;
-    double tmp_wt;
-
-    best_i = 0;
-
-    //
-    // for(i = 0; i < n; i++)
-    // {
-    //     inMst[best_i] = true;
-    //     printf("ADDING : %f\n", best_wt);
-    //     totWt += best_wt;
-    //     // best_wt = MAX_WT;
-    //
-    //
-    //     for(j = 0; j < n; j++)
-    //     {
-    //         tmp_wt = calcEuclidian(vertices, j, best_i, dimension);
-    //         printf("TMP_WT: %f < best_wt %f?\n", tmp_wt, best_wt);
-    //         if(inMst[j] == false && tmp_wt < best_wt)
-    //         {
-    //             best_wt = tmp_wt;
-    //             printf("UPDATING BEST_I: %i\n", best_i);
-    //             best_i = j;
-    //
-    //         }
-    //
-    //     }
-    // }
-
-    for(i = 0; i < n; i++)
-    {
-        inMst[best_i] = true;
-        //printf("ADDING : %f\n", dist[best_i]);
-        totWt += dist[best_i];
-
-        for(j = 0; j < n; j++)
+        for (int v = 0; v < V; v++)
         {
-            tmp_wt = calcEuclidian(vertices, j, best_i, dimension);
-            //printf("TMP_WT: %f < DIST[J] %f?\n", tmp_wt, dist[j]);
-            if(dist[j] > tmp_wt)// && inMst[j] == false)
+            tmp_wt = calcEuclidian(vertices, u, v, dimension);
+            //printf("tmp_wt: %f\n", tmp_wt);
+            if (mstSet[v] == false && tmp_wt <  key[v]) // graph[u][v] &&???
             {
-                dist[j] = tmp_wt;
-                //printf("UPDATING BEST_I: %i\n", best_i);
-                best_i = j;
+                parent[v]  = u;
+                key[v] = tmp_wt;
             }
         }
-    }
 
-
-
-
-
-
-
-
-
-
-
-    // for(i = 0; i < n; i++)
-    // {
-    //     //totWt += dist[i];
-    //     printf("%f\n", dist[i]);
-    // }
-    return totWt;
+     }
+     double totWt;
+     totWt = 0.0;
+     for(i = 0; i < V; i++)
+     {
+        //  printf("DISTANCE: %f\n", key[i]);
+         totWt += key[i];
+     }
+     return totWt;
 }
+
+// double prim(node_p * vertices, int n, int dimension)
+// {
+//     printf("NUMPTS: %i\n", n);
+//     double dist[n];
+//     bool inMst[n];
+//     double totWt;
+//     totWt = 0.0;
+//
+//     int i, j;
+//     for(i = 0; i < n; i++)
+//     {
+//         dist[i] = MAX_WT;
+//         inMst[0] = false;
+//     }
+//     inMst[0] = true;
+//     dist[0] = 0.0;
+//
+//
+//
+//
+//     int best_i;
+//     double best_wt;
+//     double tmp_wt;
+//
+//     best_i = 0;
+//
+//     //
+//     // for(i = 0; i < n; i++)
+//     // {
+//     //     inMst[best_i] = true;
+//     //     printf("ADDING : %f\n", best_wt);
+//     //     totWt += best_wt;
+//     //     // best_wt = MAX_WT;
+//     //
+//     //
+//     //     for(j = 0; j < n; j++)
+//     //     {
+//     //         tmp_wt = calcEuclidian(vertices, j, best_i, dimension);
+//     //         printf("TMP_WT: %f < best_wt %f?\n", tmp_wt, best_wt);
+//     //         if(inMst[j] == false && tmp_wt < best_wt)
+//     //         {
+//     //             best_wt = tmp_wt;
+//     //             printf("UPDATING BEST_I: %i\n", best_i);
+//     //             best_i = j;
+//     //
+//     //         }
+//     //
+//     //     }
+//     // }
+//
+//     for(i = 0; i < n; i++)
+//     {
+//         inMst[best_i] = true;
+//         //printf("ADDING : %f\n", dist[best_i]);
+//         totWt += dist[best_i];
+//
+//         for(j = 0; j < n; j++)
+//         {
+//             tmp_wt = calcEuclidian(vertices, j, best_i, dimension);
+//             //printf("TMP_WT: %f < DIST[J] %f?\n", tmp_wt, dist[j]);
+//             if(dist[j] > tmp_wt)// && inMst[j] == false)
+//             {
+//                 dist[j] = tmp_wt;
+//                 //printf("UPDATING BEST_I: %i\n", best_i);
+//                 best_i = j;
+//             }
+//         }
+//     }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//     // for(i = 0; i < n; i++)
+//     // {
+//     //     //totWt += dist[i];
+//     //     printf("%f\n", dist[i]);
+//     // }
+//     return totWt;
+// }
 
 int main(int argc, char* argv[])
 {
@@ -215,10 +281,12 @@ int main(int argc, char* argv[])
         //     printf("VERTICES passed: %f\n", vertices[ind]->x);
         // }
 
-        totWt += prim(vertices, numpts, dimension);
+        totWt += primMST(vertices, numpts, dimension);
         //destroyGraph(g);
     }
     printf("AVG WT: %f\n", totWt / (double) numtrials);
 
     return 0;
 }
+
+// TODO: MAKE PRIMS WORK FOR THE ZERO DIMENSION 
