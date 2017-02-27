@@ -65,7 +65,7 @@ node_p* createArrOfNodes(int n, int dimension)
         vertices[i] = newNode;
         // idx += sizeof(node_p);
         // vertices[i] = newNode;
-        printf("vertices[%i]->x : %f\n", i, vertices[i]->x);
+        printf("VERTEX ID : %i\n", vertices[i]->vertex);
 
     }
 
