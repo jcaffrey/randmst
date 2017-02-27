@@ -107,7 +107,7 @@ double prim(node_p * vertices, int n, int dimension)
     int i, j;
     for(i = 0; i < n; i++)
     {
-        dist[i] = MAX_WT;
+        //dist[i] = MAX_WT;
         inMst[0] = false;
     }
     inMst[0] = true;
@@ -118,14 +118,24 @@ double prim(node_p * vertices, int n, int dimension)
 
     int best_i;
     double best_wt;
+    double tmp_wt;
 
 
-    for(i = 0; i < n; i++)
+    for(i = 0; i < n - 1; i++)
     {
-        inMst[0] = true;
+        inMst[best_i] = true;
+        printf("%f\n", best_wt);
+        totWt += best_wt;
+        best_wt = .5;
+
         for(j = 0; j < n; j++)
         {
-
+            tmp_wt = calcEuclidian(vertices, j, best_i, dimension);
+            if(inMst[j] == false && best_wt > tmp_wt)
+            {
+                best_wt = tmp_wt;
+                best_i = j;
+            }
         }
     }
 
@@ -139,11 +149,11 @@ double prim(node_p * vertices, int n, int dimension)
 
 
 
-    for(i = 0; i < n; i++)
-    {
-        //totWt += dist[i];
-        printf("%f\n", dist[i]);
-    }
+    // for(i = 0; i < n; i++)
+    // {
+    //     //totWt += dist[i];
+    //     printf("%f\n", dist[i]);
+    // }
     return totWt;
 }
 
