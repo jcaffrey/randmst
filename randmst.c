@@ -96,23 +96,22 @@ double calcEuclidian(node_p* vertices, int idx_1, int idx_2, int dimension)
     return sqrt(sumDiffSquare);
 }
 
-double minKey(double key[], bool mstSet[], int V)
-{
-   // Initialize min value
-   double min = INT_MAX;
-   double min_index;
-
-   for (int v = 0; v < V; v++)
-   {
-       if (mstSet[v] == false && key[v] < min)
-       {
-           min = key[v];
-           min_index = v;
-       }
-
-   }
-   return min_index;
-}
+// double minKey(double key[], bool mstSet[], int V)
+// {
+//    // Initialize min value
+//    double min = INT_MAX;
+//    double min_index;
+//
+//    for (int v = 0; v < V; v++)
+//    {
+//        if (mstSet[v] == false && key[v] < min)
+//        {
+//            min = key[v];
+//            min_index = v;
+//        }
+//    }
+//    return min_index;
+// }
 
 double primMST(node_p * vertices, int V, int dimension)
 {
@@ -131,11 +130,28 @@ double primMST(node_p * vertices, int V, int dimension)
      key[0] = 0;     // Make key 0 so that this vertex is picked as first vertex
      parent[0] = -1; // First node is always root of MST
 
+     //double min;
+     //double min_index;
+     int u;
+     u = 0;
      for (int count = 0; count < V-1; count++)
      {
+        //int u = minKey(key, mstSet, V);
 
-        int u = minKey(key, mstSet, V);
-    //    printf("MIN KEY%i\n", u);
+        //min = INT_MAX;
+
+        //Initialize min value
+       double min = INT_MAX;
+       double min_index;
+
+       for (int v = 0; v < V; v++)
+       {
+           if (mstSet[v] == false && key[v] < min)
+           {
+               min = key[v];
+               u = v;
+           }
+       }
 
         mstSet[u] = true;
 
@@ -161,93 +177,6 @@ double primMST(node_p * vertices, int V, int dimension)
      }
      return totWt;
 }
-
-// double prim(node_p * vertices, int n, int dimension)
-// {
-//     printf("NUMPTS: %i\n", n);
-//     double dist[n];
-//     bool inMst[n];
-//     double totWt;
-//     totWt = 0.0;
-//
-//     int i, j;
-//     for(i = 0; i < n; i++)
-//     {
-//         dist[i] = MAX_WT;
-//         inMst[0] = false;
-//     }
-//     inMst[0] = true;
-//     dist[0] = 0.0;
-//
-//
-//
-//
-//     int best_i;
-//     double best_wt;
-//     double tmp_wt;
-//
-//     best_i = 0;
-//
-//     //
-//     // for(i = 0; i < n; i++)
-//     // {
-//     //     inMst[best_i] = true;
-//     //     printf("ADDING : %f\n", best_wt);
-//     //     totWt += best_wt;
-//     //     // best_wt = MAX_WT;
-//     //
-//     //
-//     //     for(j = 0; j < n; j++)
-//     //     {
-//     //         tmp_wt = calcEuclidian(vertices, j, best_i, dimension);
-//     //         printf("TMP_WT: %f < best_wt %f?\n", tmp_wt, best_wt);
-//     //         if(inMst[j] == false && tmp_wt < best_wt)
-//     //         {
-//     //             best_wt = tmp_wt;
-//     //             printf("UPDATING BEST_I: %i\n", best_i);
-//     //             best_i = j;
-//     //
-//     //         }
-//     //
-//     //     }
-//     // }
-//
-//     for(i = 0; i < n; i++)
-//     {
-//         inMst[best_i] = true;
-//         //printf("ADDING : %f\n", dist[best_i]);
-//         totWt += dist[best_i];
-//
-//         for(j = 0; j < n; j++)
-//         {
-//             tmp_wt = calcEuclidian(vertices, j, best_i, dimension);
-//             //printf("TMP_WT: %f < DIST[J] %f?\n", tmp_wt, dist[j]);
-//             if(dist[j] > tmp_wt)// && inMst[j] == false)
-//             {
-//                 dist[j] = tmp_wt;
-//                 //printf("UPDATING BEST_I: %i\n", best_i);
-//                 best_i = j;
-//             }
-//         }
-//     }
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//     // for(i = 0; i < n; i++)
-//     // {
-//     //     //totWt += dist[i];
-//     //     printf("%f\n", dist[i]);
-//     // }
-//     return totWt;
-// }
 
 int main(int argc, char* argv[])
 {
@@ -275,11 +204,6 @@ int main(int argc, char* argv[])
     for(i = 0; i < numtrials; i++)
     {
         node_p * vertices = createArrOfNodes(numpts, dimension);
-
-        // for(ind = 0; ind < numpts; ind++)
-        // {
-        //     printf("VERTICES passed: %f\n", vertices[ind]->x);
-        // }
 
         totWt += primMST(vertices, numpts, dimension);
         //destroyGraph(g);
