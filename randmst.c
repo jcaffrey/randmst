@@ -81,7 +81,7 @@ double calcEuclidian(node_p* vertices, int idx_1, int idx_2, int dimension)
     sumDiffSquare = 0.0;
     if (dimension == 0)
     {
-        return node_2->wt;
+        return fabs(node_1->wt - node_2->wt);
     }
     if (dimension >= 2)
     {
@@ -98,7 +98,61 @@ double calcEuclidian(node_p* vertices, int idx_1, int idx_2, int dimension)
     return sqrt(sumDiffSquare);
 }
 
-double mstWt(node_p * vertices, int V, int dimension)
+double mstWtOnRand(int V)
+{
+    double dist_keys[V];
+    double dist_wts[V];
+    bool in_mst[V];
+    int i, u, v, min_key;
+    double tmp_wt, tot_wt, min_wt;
+
+    for(i = 0; i < V; i++)
+    {
+        dist_wts[i] = INT_MAX;
+        in_mst[i] = false;
+    }
+
+    dist_wts[0] = 0;
+    dist_keys[0] = 0;
+
+    min_key = 0;
+    for(i = 0; i < V - 1; i++)
+    {
+        min_wt = INT_MAX;
+        for(u = 0; u < V; u++)
+        {
+            if (in_mst[u] == false && dist_wts[u] < min_wt)
+            {
+                min_wt = dist_wts[u];
+                min_key = u;
+            }
+        }
+        in_mst[min_key] = true;
+        for(v = 0; v < V; v++)
+        {
+            // tmp_wt = calcEuclidian(vertices, min_key, v, dimension);
+            if(in_mst[v] == false && tmp_wt < dist_wts[v])
+            {
+                dist_keys[v] = min_key;
+                dist_wts[v] = tmp_wt;
+            }
+        }
+        // ...going for one loop...
+        // for (u = 0; u < V; u++)
+        // {
+        //     if(in_mst[u] == false)
+        // }
+    }
+    tot_wt = 0.0;
+    for(i = 0; i < V; i++)
+    {
+        tot_wt += dist_wts[i];
+    }
+    return tot_wt;
+
+}
+
+double mstWtOnGrid(node_p * vertices, int V, int dimension)
 {
     double dist_keys[V];
     double dist_wts[V];
@@ -137,6 +191,11 @@ double mstWt(node_p * vertices, int V, int dimension)
                 dist_wts[v] = tmp_wt;
             }
         }
+        // ...going for one loop...
+        // for (u = 0; u < V; u++)
+        // {
+        //     if(in_mst[u] == false)
+        // }
     }
     tot_wt = 0.0;
     for(i = 0; i < V; i++)
@@ -178,9 +237,17 @@ int main(int argc, char* argv[])
 
     for(i = 0; i < numtrials; i++)
     {
-        node_p * vertices = createArrOfNodes(numpts, dimension);
+        if (dimension == 0)
+        {
+            totWt += mstWtOnRand(numpts);
+        }
+        else
+        {
+            node_p * vertices = createArrOfNodes(numpts, dimension);
 
-        totWt += mstWt(vertices, numpts, dimension);
+            totWt += mstWtOnGrid(vertices, numpts, dimension);
+        }
+
     }
     printf("AVG WT: %f\n", totWt / (double) numtrials);
 
