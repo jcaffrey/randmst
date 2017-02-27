@@ -4,8 +4,9 @@
 #include <math.h>
 #include <assert.h>
 #include <limits.h>
+#include <stdbool.h>
 
-#define MAX_WT 10.0
+#define MAX_WT 1000.0
 
 /* Adjacency list node*/
 typedef struct node
@@ -73,51 +74,78 @@ node_p* createArrOfNodes(int n, int dimension)
 }
 
 
-
-double calcEuclidian(node_p src, node_p dest, int dimension)
+// only call this on dimension 2, 3, 4
+double calcEuclidian(node_p* vertices, int idx_1, int idx_2, int dimension)
 {
+    node_p node_1 = vertices[idx_1];
+    node_p node_2 = vertices[idx_2];
     double sumDiffSquare;
+    sumDiffSquare = 0.0;
     if (dimension >= 2)
     {
-        sumDiffSquare = pow(src->x - dest->x, 2) + pow(src->y - dest->y, 2);
+        sumDiffSquare = pow(node_1->x - node_2->x, 2) + pow(node_1->y - node_2->y, 2);
     }
     if (dimension >= 3)
     {
-        sumDiffSquare = pow(src->z - dest->z, 2);
+        sumDiffSquare = pow(node_1->z - node_2->z, 2);
     }
     if (dimension == 4)
     {
-        sumDiffSquare = pow(src->f - dest->f, 2);
+        sumDiffSquare = pow(node_1->f - node_2->f, 2);
     }
     return sqrt(sumDiffSquare);
 }
 
+double prim(node_p * vertices, int n, int dimension)
+{
+    printf("NUMPTS: %i\n", n);
+    double dist[n];
+    bool inMst[n];
+    double totWt;
+    totWt = 0.0;
+
+    int i, j;
+    for(i = 0; i < n; i++)
+    {
+        dist[i] = MAX_WT;
+        inMst[0] = false;
+    }
+    inMst[0] = true;
+    dist[0] = 0.0;
 
 
-// void destroyGraph(graph_p g)
-// {
-//     if(g)
-//     {
-//         if(g->alistArr)
-//         {
-//             int v;
-//             for (v = 0; v < g->V; v++)
-//             {
-//                 node_p alistPtr = g->alistArr[v].head;
-//                 while (alistPtr)
-//                 {
-//                     node_p tmp = alistPtr;
-//                     alistPtr = alistPtr->next;
-//                     free(tmp);
-//                 }
-//             }
-//             free(g->alistArr);
-//         }
-//         free(g);
-//     }
-// }
 
 
+    int best_i;
+    double best_wt;
+
+
+    for(i = 0; i < n; i++)
+    {
+        inMst[0] = true;
+        for(j = 0; j < n; j++)
+        {
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    for(i = 0; i < n; i++)
+    {
+        //totWt += dist[i];
+        printf("%f\n", dist[i]);
+    }
+    return totWt;
+}
 
 int main(int argc, char* argv[])
 {
@@ -145,13 +173,13 @@ int main(int argc, char* argv[])
     for(i = 0; i < numtrials; i++)
     {
         node_p * vertices = createArrOfNodes(numpts, dimension);
-        for(ind = 0; ind < numpts; ind++)
-        {
-            printf("VERTICES passed: %f\n", vertices[ind]->x);
-        }
-        printf("vertices[0]->x: %f\n", vertices[0]->x);
-        //displayGraph(g);
-        //totWt += prim(g, dimension);
+
+        // for(ind = 0; ind < numpts; ind++)
+        // {
+        //     printf("VERTICES passed: %f\n", vertices[ind]->x);
+        // }
+
+        totWt += prim(vertices, numpts, dimension);
         //destroyGraph(g);
     }
     printf("AVG WT: %f\n", totWt / (double) numtrials);
