@@ -26,10 +26,6 @@ node_p createNode(int v, int dimension)
     node_p newNode = (node_p)malloc(sizeof(node_t));
     if(!newNode)
         printf("bad\n" );
-    // if(dimension == 0)
-    // {
-    //     newNode->wt = (double) rand() / (double) RAND_MAX;
-    // }
 
     if (dimension >= 2)
     {
