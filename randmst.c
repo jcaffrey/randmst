@@ -87,11 +87,11 @@ double calcEuclidian(node_p* vertices, int idx_1, int idx_2, int dimension)
     }
     if (dimension >= 3)
     {
-        sumDiffSquare = pow(node_1->z - node_2->z, 2);
+        sumDiffSquare += pow(node_1->z - node_2->z, 2);
     }
     if (dimension == 4)
     {
-        sumDiffSquare = pow(node_1->f - node_2->f, 2);
+        sumDiffSquare += pow(node_1->f - node_2->f, 2);
     }
     return sqrt(sumDiffSquare);
 }
@@ -289,4 +289,4 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-// TODO: MAKE PRIMS WORK FOR THE ZERO DIMENSION 
+// TODO: MAKE PRIMS WORK FOR THE ZERO DIMENSION
