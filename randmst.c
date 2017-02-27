@@ -19,18 +19,6 @@ typedef struct node
     double f;
 } node_t, *node_p;
 
-/* Adjacency list */
-typedef struct alist
-{
-    int E;           /*number of members in the list (for future use)*/
-    node_t *head;      /*head of the adjacency linked list*/
-} alist_t, *alist_p;
-
-typedef struct graph
-{
-    int V;         /*Number of vertices*/
-    alist_p alistArr;     /*Adjacency lists' array*/
-} graph_t, *graph_p;
 
 node_p createNode(int v, int dimension)
 {
@@ -63,29 +51,28 @@ node_p createNode(int v, int dimension)
 }
 
 // instantiate vertices
-graph_p createGraph(int n, int dimension)
+node_p* createArrOfNodes(int n, int dimension)
 {
-    int i;
-    graph_p graph = (graph_p)malloc(sizeof(graph_t));
-    if(!graph)
-        printf("bad\n" );
-    graph->V = n;
+    node_p * vertices;
+    vertices = malloc(n * sizeof(node_p));
 
-    graph->alistArr = (alist_p)malloc(n * sizeof(alist_t));
-    if(!graph->alistArr)
-        printf("bad\n" );
-
-    node_p alistPtr;
-    alistPtr = graph->alistArr[0].head;
+    int i, idx;
+    node_p newNode;
     for(i = 0; i < n; i++)
     {
-        node_p newNode = createNode(i, dimension);
-        graph->alistArr[i].head = NULL;
-        graph->alistArr[i].E = 0; // prob don't need this
+        newNode = createNode(i, dimension);
+        //printf("%f\n", newNode->x);
+        vertices[i] = newNode;
+        // idx += sizeof(node_p);
+        // vertices[i] = newNode;
+        printf("vertices[%i]->x : %f\n", i, vertices[i]->x);
+
     }
 
-    return graph;
+    return vertices;
 }
+
+
 
 double calcEuclidian(node_p src, node_p dest, int dimension)
 {
@@ -107,48 +94,28 @@ double calcEuclidian(node_p src, node_p dest, int dimension)
 
 
 
-void displayGraph(graph_p graph)
-{
-    int i;
-    for (i = 0; i < graph->V; i++)
-    {
-        node_p alistPtr = graph->alistArr[i].head;
-        printf("\n%d: ", i);
-        while (alistPtr)
-        {
-            printf("%d->", alistPtr->vertex);
-            alistPtr = alistPtr->next;
-        }
-        printf("NULL\n");
-    }
-
-    printf("NUM VERTICES IS: %i\n", graph->V);
-
-}
-
-
-void destroyGraph(graph_p g)
-{
-    if(g)
-    {
-        if(g->alistArr)
-        {
-            int v;
-            for (v = 0; v < g->V; v++)
-            {
-                node_p alistPtr = g->alistArr[v].head;
-                while (alistPtr)
-                {
-                    node_p tmp = alistPtr;
-                    alistPtr = alistPtr->next;
-                    free(tmp);
-                }
-            }
-            free(g->alistArr);
-        }
-        free(g);
-    }
-}
+// void destroyGraph(graph_p g)
+// {
+//     if(g)
+//     {
+//         if(g->alistArr)
+//         {
+//             int v;
+//             for (v = 0; v < g->V; v++)
+//             {
+//                 node_p alistPtr = g->alistArr[v].head;
+//                 while (alistPtr)
+//                 {
+//                     node_p tmp = alistPtr;
+//                     alistPtr = alistPtr->next;
+//                     free(tmp);
+//                 }
+//             }
+//             free(g->alistArr);
+//         }
+//         free(g);
+//     }
+// }
 
 
 
@@ -171,15 +138,21 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    int i;
+    int i, ind;
     double totWt;
     totWt = 0.0;
+    //node_p vertices[numpts];
     for(i = 0; i < numtrials; i++)
     {
-        graph_p g = createGraph(numpts);
-        displayGraph(g, dimension);
+        node_p * vertices = createArrOfNodes(numpts, dimension);
+        for(ind = 0; ind < numpts; ind++)
+        {
+            printf("VERTICES passed: %f\n", vertices[ind]->x);
+        }
+        printf("vertices[0]->x: %f\n", vertices[0]->x);
+        //displayGraph(g);
         //totWt += prim(g, dimension);
-        destroyGraph(g);
+        //destroyGraph(g);
     }
     printf("AVG WT: %f\n", totWt / (double) numtrials);
 
